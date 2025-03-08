@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1051900241653",
+    "project_id": "practica-progmedia-daniel-riv",
+    "storage_bucket": "practica-progmedia-daniel-riv.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051900241653:android:ef2633a05b689a6d2287bc",
+        "android_client_info": {
+          "package_name": "com.example.practica_2ev_progmultimedia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAknYpeFRaH5ZOPExGduriAsulX-R8j4XQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
