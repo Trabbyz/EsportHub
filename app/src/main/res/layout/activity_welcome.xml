@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@color/colorFondo">
+
+    <!-- Logo de la aplicación -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="@string/logo"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo" />
+
+    <!-- Título -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="@string/bienvenido_a_esportshub"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <!-- Botón Iniciar Sesión -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/iniciar_sesi_n"
+        style="@style/Widget.Material3.Button"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorPrimary"/>
+
+    <!-- Botón Registrarse -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registrarse"
+        android:backgroundTint="@color/colorGreen"
+        android:strokeColor="@color/colorSecondary"
+        />
+</LinearLayout>
+
+

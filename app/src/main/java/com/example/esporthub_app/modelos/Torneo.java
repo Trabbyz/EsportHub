@@ -1,4 +1,4 @@
-package com.example.esporthub_app.models;
+package com.example.esporthub_app.modelos;
 
 import java.util.List;
 

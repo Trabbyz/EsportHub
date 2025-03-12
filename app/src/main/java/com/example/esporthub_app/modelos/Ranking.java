@@ -1,4 +1,4 @@
-package com.example.esporthub_app.models;
+package com.example.esporthub_app.modelos;
 
 public class Ranking {
     private String idTorneo;
