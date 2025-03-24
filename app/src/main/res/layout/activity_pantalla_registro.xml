@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pantallaRegistro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFondo"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/logo" />
+
+    <!-- Campo Nombre -->
+    <EditText
+        android:id="@+id/editTextNombre"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_rectangular_registrarse"
+        android:hint="Nombre"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/hintColor" />
+
+    <!-- Campo Apellido -->
+    <EditText
+        android:id="@+id/editTextApellido"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_rectangular_registrarse"
+        android:hint="Apellido"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/hintColor" />
+
+    <!-- Campo Email -->
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_rectangular_registrarse"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/hintColor" />
+
+    <!-- Campo Contraseña -->
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_rectangular_registrarse"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/hintColor" />
+
+    <!-- Selector de Rol -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Selecciona tu Rol"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <Spinner
+        android:id="@+id/spinnerRol"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/white"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <!-- Botón de Registro -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:text="Registrarse"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
+
+
+
+
+

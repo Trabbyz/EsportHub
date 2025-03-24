@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.example.esporthub_app'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.example.esporthub_app"
         minSdk 24
-        targetSdk 34
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
 
@@ -41,6 +41,6 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation platform('com.google.firebase:firebase-bom:33.10.0')
+    implementation platform('com.google.firebase:firebase-bom:33.11.0')
     implementation 'com.google.android.material:material:1.10.0'
 }

@@ -1,4 +1,4 @@
-package com.example.esporthub_app.vistas.bienvenida;
+package com.example.esporthub_app.vistas.home;
 
 import android.os.Bundle;
 
@@ -10,14 +10,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.esporthub_app.R;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class Pantalla_InicioJugadores extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        setContentView(R.layout.activity_pantalla_inicio_jugadores);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pantallaInicioJugadores), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;

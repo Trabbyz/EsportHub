@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pantallaBienvenida"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/colorFondo"
     android:gravity="center"
-    android:padding="24dp"
-    android:background="@color/colorFondo">
+    android:orientation="vertical"
+    android:padding="24dp">
 
     <!-- Logo de la aplicación -->
     <ImageView
@@ -30,22 +30,21 @@
     <!-- Botón Iniciar Sesión -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
+        style="@style/Widget.Material3.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/iniciar_sesi_n"
-        style="@style/Widget.Material3.Button"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorPrimary"/>
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/iniciar_sesi_n" />
 
     <!-- Botón Registrarse -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/registrarse"
         android:backgroundTint="@color/colorGreen"
         android:strokeColor="@color/colorSecondary"
-        />
+        android:text="@string/registrarse" />
 </LinearLayout>
 
 

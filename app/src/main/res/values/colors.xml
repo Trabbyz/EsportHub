@@ -6,4 +6,11 @@
     <color name="colorPrimary">#007BFF</color>
     <color name="colorSecondary">#6C757D</color>
     <color name="colorGreen">#28A745</color>
+    <color name="colorFondo2">#212529</color> <!-- Fondo oscuro elegante -->
+    <color name="colorPrimario">#0D6EFD</color> <!-- Azul vibrante -->
+    <color name="colorSecundario">#6C757D</color> <!-- Gris neutro -->
+    <color name="colorTexto">#FFFFFF</color> <!-- Texto blanco -->
+    <color name="colorCampo">#F8F9FA</color> <!-- Fondo de campos claro -->
+    <color name="hintColor">#B6B2B2</color>
+
 </resources>

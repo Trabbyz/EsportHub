@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1051900241653",
-    "project_id": "practica-progmedia-daniel-riv",
-    "storage_bucket": "practica-progmedia-daniel-riv.firebasestorage.app"
+    "project_number": "833894223438",
+    "project_id": "esporthub-app",
+    "storage_bucket": "esporthub-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1051900241653:android:ef2633a05b689a6d2287bc",
+        "mobilesdk_app_id": "1:833894223438:android:980410179046894ca9bd1f",
         "android_client_info": {
-          "package_name": "com.example.practica_2ev_progmultimedia"
+          "package_name": "com.example.esporthub_app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAknYpeFRaH5ZOPExGduriAsulX-R8j4XQ"
+          "current_key": "AIzaSyCosQFK2xJ1z8TyPZ651jFft0gKGvsmjcM"
         }
       ],
       "services": {

@@ -1,0 +1,46 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="Inicio 🏠"
+        />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Perfil 👤"
+        />
+
+    <item
+        android:id="@+id/nav_my_tournaments"
+        android:title="Mis Torneos 🏆"
+        />
+
+    <item
+        android:id="@+id/nav_my_teams"
+        android:title="Mis Equipos ⚔"
+        />
+
+    <item
+        android:id="@+id/nav_explore_tournaments"
+        android:title="Explorar Torneos 🔍"
+        />
+
+    <item
+        android:id="@+id/nav_explore_teams"
+        android:title="Explorar Equipos 🏅"
+        />
+
+    <item
+        android:id="@+id/nav_notifications"
+        android:title="Notificaciones 🔔"
+        />
+
+    <item
+        android:id="@+id/nav_settings"
+        android:title="Configuración ⚙"
+         />
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Cerrar Sesión 🚪"
+        />
+</menu>
