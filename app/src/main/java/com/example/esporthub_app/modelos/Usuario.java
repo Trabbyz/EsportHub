@@ -10,10 +10,10 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String apellido, String email, String nombre, String password, String rolUsuario) {
+    public Usuario(String nombre, String apellido, String email, String password, String rolUsuario) {
+        this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.nombre = nombre;
         this.password = password;
         this.rolUsuario = rolUsuario;
     }

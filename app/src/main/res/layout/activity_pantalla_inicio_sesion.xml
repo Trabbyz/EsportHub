@@ -28,6 +28,7 @@
         android:hint="Correo electrónico">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextCorreo"
             android:layout_width="match_parent"
             android:layout_height="57dp"
             android:background="@color/colorCampo"
@@ -44,7 +45,8 @@
         android:hint="Contraseña">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="376dp"
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorCampo"
             android:backgroundTint="@color/colorCampo"
@@ -55,6 +57,7 @@
 
     <!-- Botón de Iniciar Sesión -->
     <Button
+        android:id="@+id/botonInicioSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -63,11 +66,13 @@
         android:textColor="@android:color/white" />
 
     <!-- Botón de Registro -->
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/botonRegistro"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="@color/colorSecundario" />
+        android:backgroundTint="@color/colorSecundario"
+        android:text="Registrarse"
+        android:textColor="@android:color/white" />
 </LinearLayout>
+

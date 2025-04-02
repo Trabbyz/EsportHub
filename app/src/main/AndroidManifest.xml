@@ -16,6 +16,27 @@
             android:name=".vistas.home.Pantalla_InicioJugadores"
             android:exported="false" />
         <activity
+            android:name=".vistas.home.Pantalla_InicioAdministradores"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.notificaciones.Pantalla_Notificaciones_Jugador"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.equipos.Pantalla_EquiposDisponibles"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.torneos.Pantalla_DetallesTorneo"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.torneos.Pantalla_TorneosDisponibles"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.jugador.Pantalla_EditarPerfil"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.jugador.Pantalla_VerDetallesPerfil"
+            android:exported="false" />
+        <activity
             android:name=".vistas.auth.Pantalla_Registro"
             android:exported="false" />
         <activity
@@ -26,13 +47,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-
-
     </application>
 
 </manifest>

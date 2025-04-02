@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_inicio"
+        android:icon="@drawable/ic_home"
+        android:title="Inicio"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_perfil"
+        android:icon="@drawable/ic_profile"
+        android:title="Perfil"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_mis_torneos"
+        android:icon="@drawable/ic_trophy"
+        android:title="Mis Torneos"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_mis_equipos"
+        android:icon="@drawable/ic_teams"
+        android:title="Mis Equipos"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_explorar_torneos"
+        android:icon="@drawable/ic_search"
+        android:title="Explorar Torneos"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_explorar_equipos"
+        android:icon="@drawable/ic_medal"
+        android:title="Explorar Equipos"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_notificaciones"
+        android:icon="@drawable/ic_notifications"
+        android:title="Notificaciones"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_configuracion"
+        android:icon="@drawable/ic_settings"
+        android:title="Configuración"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/nav_cerrar_sesion"
+        android:icon="@drawable/ic_logout"
+        android:title="Cerrar Sesión"
+        android:checkable="true"/>
+
+</menu>

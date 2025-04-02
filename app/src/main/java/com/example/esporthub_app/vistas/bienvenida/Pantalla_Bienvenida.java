@@ -22,7 +22,7 @@ public class Pantalla_Bienvenida extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_bienvenida);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pantallaBienvenida), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -30,7 +30,7 @@ public class Pantalla_Bienvenida extends AppCompatActivity {
         });
 
         botonIniciarSesion = findViewById(R.id.btnLogin);
-        botonRegistrarse = findViewById(R.id.btnRegister);
+        botonRegistrarse = findViewById(R.id.btnRegistro);
 
         botonIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
