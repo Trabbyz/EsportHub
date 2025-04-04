@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.esporthub_app.R;
 
-public class Pantalla_VerDetallesPerfil extends AppCompatActivity {
+public class Pantalla_VerPerfil extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

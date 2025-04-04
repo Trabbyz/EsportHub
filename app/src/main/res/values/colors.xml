@@ -12,5 +12,8 @@
     <color name="colorTexto">#FFFFFF</color> <!-- Texto blanco -->
     <color name="colorCampo">#F8F9FA</color> <!-- Fondo de campos claro -->
     <color name="hintColor">#B6B2B2</color>
+    <color name="colorPrimaryInicio">#6200EE</color> <!-- morado bonito -->
+    <color name="colorPrimaryDarkInicio">#3700B3</color>
+    <color name="colorAccentInicio">#03DAC5</color>
 
 </resources>

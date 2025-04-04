@@ -13,6 +13,12 @@
         android:theme="@style/Theme.EsportHub_APP"
         tools:targetApi="31">
         <activity
+            android:name=".vistas.jugador.Pantalla_VerMisEquipos"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.jugador.Pantalla_VerMisTorneos"
+            android:exported="false" />
+        <activity
             android:name=".vistas.home.Pantalla_InicioJugadores"
             android:exported="false" />
         <activity
@@ -34,7 +40,7 @@
             android:name=".vistas.jugador.Pantalla_EditarPerfil"
             android:exported="false" />
         <activity
-            android:name=".vistas.jugador.Pantalla_VerDetallesPerfil"
+            android:name=".vistas.jugador.Pantalla_VerPerfil"
             android:exported="false" />
         <activity
             android:name=".vistas.auth.Pantalla_Registro"
