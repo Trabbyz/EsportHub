@@ -65,7 +65,7 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-    // Cargar imagen de perfil (puedes usar un Intent para abrir galería)
+    // Cargar imagen de perfil (usar un Intent para abrir galería)
        // imgPerfil.setOnClickListener(v -> {
        //     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         //    startActivityForResult(intent, 100);
