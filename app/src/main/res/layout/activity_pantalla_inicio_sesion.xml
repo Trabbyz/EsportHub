@@ -25,34 +25,34 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Correo electrónico">
+        android:hint="Correo electrónico"
+        android:layout_marginTop="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextCorreo"
             android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:background="@color/colorCampo"
-            android:backgroundTint="@color/colorCampo"
+            android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:padding="10dp"
-            android:textColor="@color/colorFondo" />
+
+            />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Campo de Contraseña -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña">
+        android:hint="Contraseña"
+        android:layout_marginTop="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/colorCampo"
-            android:backgroundTint="@color/colorCampo"
+            android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:textColor="@color/colorFondo" />
+
+            />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Botón de Iniciar Sesión -->
@@ -75,4 +75,5 @@
         android:text="Registrarse"
         android:textColor="@android:color/white" />
 </LinearLayout>
+
 

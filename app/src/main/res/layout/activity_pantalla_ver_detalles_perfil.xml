@@ -4,10 +4,9 @@
     android:id="@+id/pantallaVerPerfil"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorFondo"
+    android:background="#CFD8DC"
     android:fitsSystemWindows="true">
 
-    <!-- Toolbar con flecha atrás -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarPerfil"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         app:title="Perfil"
         app:titleTextColor="@android:color/white" />
 
-    <!-- Contenido principal -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +27,6 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <!-- Imagen o avatar del perfil -->
             <ImageView
                 android:id="@+id/imgAvatarPerfil"
                 android:layout_width="120dp"
@@ -39,53 +36,98 @@
                 android:src="@drawable/logo"
                 android:layout_gravity="center" />
 
-            <!-- Datos del perfil con bordes redondeados y fondo suave -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Nombre"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/editNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="Nombre: Juan Pérez"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:background="@drawable/bg_text_view"
+                android:background="#b9b9b9"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
                 android:gravity="start"
-                android:layout_marginTop="16dp" />
+                android:padding="12dp"
+                android:text="Juan Pérez"
+                android:textColor="#333333"
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/editEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="Email: juanperez@email.com"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:background="#b9b9b9"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:gravity="start"
                 android:padding="12dp"
-                android:background="@drawable/bg_text_view"
-                android:gravity="start" />
+                android:text="juanperez@email.com"
+                android:textColor="#333333"
+                android:textSize="18sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Rol"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/editRol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="Rol: Jugador"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:background="#b9b9b9"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:gravity="start"
                 android:padding="12dp"
-                android:background="@drawable/bg_text_view"
-                android:gravity="start" />
+                android:text="Jugador"
+                android:textColor="#333333"
+                android:textSize="18sp" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Equipo"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/editEquipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:text="Equipo: Los Dragones"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:background="#b9b9b9"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:gravity="start"
                 android:padding="12dp"
-                android:background="@drawable/bg_text_view"
-                android:gravity="start" />
+                android:text="Los Dragones"
+                android:textColor="#333333"
+                android:textSize="18sp" />
 
-            <!-- Botón para editar con diseño atractivo -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEditarPerfil"
                 android:layout_width="match_parent"
@@ -96,7 +138,30 @@
                 android:textColor="@android:color/white"
                 android:layout_marginTop="24dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar Cambios"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:visibility="gone"
+                android:layout_marginTop="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancelar"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:visibility="gone"
+                android:layout_marginTop="8dp" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 

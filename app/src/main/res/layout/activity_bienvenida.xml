@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:text="@string/bienvenido_a_esportshub"
-        android:textColor="#FFFFFF"
         android:textSize="26sp"
         android:textStyle="bold" />
 
