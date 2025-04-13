@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Equipo {
     private String nombre;
+    private String descripcion;
     private List<Jugador> miembros;
     private int maxJugadores;
     private List<Partido> partidos;
@@ -11,10 +12,11 @@ public class Equipo {
     public Equipo() {
     }
 
-    public Equipo(int maxJugadores, List<Jugador> miembros, String nombre, List<Partido> partidos) {
-        this.maxJugadores = maxJugadores;
-        this.miembros = miembros;
+    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos) {
         this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.miembros = miembros;
+        this.maxJugadores = maxJugadores;
         this.partidos = partidos;
     }
 
@@ -48,5 +50,13 @@ public class Equipo {
 
     public void setPartidos(List<Partido> partidos) {
         this.partidos = partidos;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

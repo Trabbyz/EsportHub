@@ -9,7 +9,7 @@
 
     <!-- Toolbar con título de pantalla -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarMisEquipos"
+        android:id="@+id/toolbarCrearEquipo"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -24,4 +24,40 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="16dp"
         android:scrollbars="vertical" />
+
+    <!-- Contenedor para mensaje y botones cuando no hay equipos -->
+    <LinearLayout
+        android:id="@+id/layoutSinEquipos"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/textNoEquipos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No hay ningún equipo disponible"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:paddingBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnCrearEquipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crear equipo"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnBuscarEquipos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buscar equipos" />
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

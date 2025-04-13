@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    android:id="@+id/pantallaMisTorneos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorFondo"
@@ -9,14 +9,14 @@
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarMisTorneos"
+        android:id="@+id/toolbarCrearEquipo"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:title="Mis Torneos"
         app:titleTextColor="@android:color/white" />
 
-    <!-- RecyclerView para mostrar los torneos -->
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTorneos"
         android:layout_width="match_parent"
@@ -24,4 +24,16 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="16dp"
         android:scrollbars="vertical" />
+
+    <!-- Texto para cuando no hay torneos -->
+    <TextView
+        android:id="@+id/textNoTorneos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No hay torneos disponibles"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

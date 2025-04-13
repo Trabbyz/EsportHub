@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFondo">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCrearEquipo"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:title="Crear Equipo"
+        app:titleTextColor="@android:color/white" />
+
+    <!-- Contenido scrollable -->
+    <ScrollView
+        android:id="@+id/layoutCrearEquipo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Campo: Nombre del equipo -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre del equipo">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNombreEquipo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="@android:color/white"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Campo: Descripción -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Descripción">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDescripcionEquipo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:textColor="@android:color/white"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Texto: Máximo de jugadores -->
+            <TextView
+                android:id="@+id/tvMaxJugadores"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Máximo de jugadores: 5"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Lista de miembros -->
+            <TextView
+                android:id="@+id/tvMiembros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Miembros: 0 / 5"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tvJugadoresDisponibles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seleccionar miembros:"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerJugadores"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Botón: Crear equipo -->
+            <Button
+                android:id="@+id/btnCrearEquipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear Equipo"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/colorPrimario"
+                android:layout_marginTop="32dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
