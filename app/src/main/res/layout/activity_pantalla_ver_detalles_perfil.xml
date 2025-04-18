@@ -108,13 +108,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Equipo"
+                android:text="Rol del Juego"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp" />
 
             <EditText
-                android:id="@+id/editEquipo"
+                android:id="@+id/editRolJuego"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"

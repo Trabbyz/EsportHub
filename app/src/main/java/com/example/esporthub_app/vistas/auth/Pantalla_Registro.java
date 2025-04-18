@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.esporthub_app.R;
+import com.example.esporthub_app.modelos.Jugador;
 import com.example.esporthub_app.modelos.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +34,10 @@ public class Pantalla_Registro extends AppCompatActivity {
     private EditText nombreUsuario, apellidos, correoElectronico, contrasena, repetirContrasena;
     private Button crearCuenta, cancelar;
     private Spinner spinnerRoles;
+    private Spinner spinnerRolJuego;
+    private TextView textRolJuego;
+    private String rolJuegoSeleccionado;
+
 
     private String rolSeleccionado;
 
@@ -55,7 +61,8 @@ public class Pantalla_Registro extends AppCompatActivity {
         crearCuenta       = findViewById(R.id.btnRegistrarse);
 
         spinnerRoles      = findViewById(R.id.spinnerRol);
-
+        spinnerRolJuego = findViewById(R.id.spinnerRolJuego);
+        textRolJuego = findViewById(R.id.textRolJuego);
 
         // Cargar roles en el Spinner
         String[] roles = {"Selecciona tu rol", "Jugador", "Administrador"};
@@ -63,17 +70,29 @@ public class Pantalla_Registro extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRoles.setAdapter(adapter);
 
+
+        String[] rolesJuego = {"Top", "Jungla", "Mid", "ADC", "Support"};
+        ArrayAdapter<String> adapterRolJuego = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, rolesJuego);
+        adapterRolJuego.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRolJuego.setAdapter(adapterRolJuego);
+
+// Ocultarlo por defecto
+        spinnerRolJuego.setVisibility(View.GONE);
+        textRolJuego.setVisibility(View.GONE);
+
         // Manejar selección de rol
         spinnerRoles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 rolSeleccionado = parent.getItemAtPosition(position).toString();
-                // Opcional: mostrar mensaje si se selecciona "Selecciona tu rol"
-                if (rolSeleccionado.equals("Selecciona tu rol")) {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "Rol seleccionado: " + rolSeleccionado,
-                            Snackbar.LENGTH_SHORT).show();
-                    return;
+
+                if (rolSeleccionado.equals("Jugador")) {
+                    spinnerRolJuego.setVisibility(View.VISIBLE);
+                    textRolJuego.setVisibility(View.VISIBLE);
+                } else {
+                    spinnerRolJuego.setVisibility(View.GONE);
+                    textRolJuego.setVisibility(View.GONE);
                 }
             }
 
@@ -146,7 +165,8 @@ public class Pantalla_Registro extends AppCompatActivity {
         String correo       = correoElectronico.getText().toString();
         String password     = contrasena.getText().toString();
         String rol          = spinnerRoles.getSelectedItem().toString();
-
+        String rolJuegoSeleccionado = rol.equals("Jugador") ? spinnerRolJuego.getSelectedItem().toString() : null;
+        Log.d("Firestore","Rol Juego : "+rolJuegoSeleccionado);
         // Validar campos
         if (nombreUs.isEmpty() || apellidosTexto.isEmpty() ||
                 correo.isEmpty() || password.isEmpty() ||
@@ -157,10 +177,10 @@ public class Pantalla_Registro extends AppCompatActivity {
             return;
         }
 
-
+        String uidJugador = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Crear objeto Usuario (modelo)
-        Usuario nuevoUsuario = new Usuario(nombreUs, apellidosTexto, correo, password, rol);
-
+        Usuario nuevoUsuario = new Usuario(nombreUs, apellidosTexto, correo, password, rol, rolJuegoSeleccionado);
+        Jugador nuevoJugador = new Jugador(uidJugador,nombreUs,"",rolJuegoSeleccionado,null);
         // Guardar en Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Guardar en Firestore (colección "usuarios")
@@ -176,12 +196,12 @@ public class Pantalla_Registro extends AppCompatActivity {
                     if (rol.equals("Jugador")) {
                         // Agregar también a la colección "jugadores"
                         db.collection("jugadores")
-                                .add(nuevoUsuario)
+                                .add(nuevoJugador)
                                 .addOnSuccessListener(empleadoRef -> {
-                                    Log.d("Firestore", "Empleado añadido con éxito a la colección 'empleados'");
+                                    Log.d("Firestore", "Jugador añadido con éxito a la colección 'jugadores'");
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e("Firestore", "Error al guardar empleado en 'empleados'", e);
+                                    Log.e("Firestore", "Error al guardar jugador en 'jugadores'", e);
                                 });
                     }
 

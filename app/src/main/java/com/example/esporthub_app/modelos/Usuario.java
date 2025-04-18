@@ -6,16 +6,18 @@ public class Usuario {
     private String email;
     private String password;
     private String rolUsuario;
+    private String rolJuego;
 
     public Usuario() {
     }
 
-    public Usuario(String nombre, String apellido, String email, String password, String rolUsuario) {
+    public Usuario(String nombre, String apellido, String email, String password, String rolUsuario, String rolJuego) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.password = password;
         this.rolUsuario = rolUsuario;
+        this.rolJuego = rolJuego;
     }
 
     public String getApellido() {
@@ -56,5 +58,13 @@ public class Usuario {
 
     public void setRolUsuario(String rolUsuario) {
         this.rolUsuario = rolUsuario;
+    }
+
+    public String getRolJuego() {
+        return rolJuego;
+    }
+
+    public void setRolJuego(String rolJuego) {
+        this.rolJuego = rolJuego;
     }
 }

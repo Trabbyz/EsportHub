@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/pantallaCrearEquipo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorFondo">
+    android:background="@color/colorFondo"
+    android:orientation="vertical">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -13,73 +14,94 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:title="Crear Equipo"
+        app:titleCentered="true"
         app:titleTextColor="@android:color/white" />
 
     <!-- Contenido scrollable -->
     <ScrollView
-        android:id="@+id/layoutCrearEquipo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+        android:padding="20dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <!-- Campo: Nombre del equipo -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del equipo">
+                android:layout_marginBottom="16dp"
+                android:hint="Nombre del equipo"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNombreEquipo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@android:color/white"/>
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Campo: Descripción -->
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descripción">
+                android:layout_marginBottom="16dp"
+                android:hint="Descripción"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescripcionEquipo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:minLines="3"
-                    android:textColor="@android:color/white"/>
+                    android:minLines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Texto: Máximo de jugadores -->
+            <!-- Máximo de jugadores -->
             <TextView
                 android:id="@+id/tvMaxJugadores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Máximo de jugadores: 5"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"/>
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-            <!-- Lista de miembros -->
+            <!-- Miembros -->
             <TextView
                 android:id="@+id/tvMiembros"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="Miembros: 0 / 5"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="8dp" />
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp" />
 
+            <!-- Jugadores disponibles -->
             <TextView
                 android:id="@+id/tvJugadoresDisponibles"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Seleccionar miembros:"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="16dp" />
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+            <!-- Recycler de jugadores -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerJugadores"
                 android:layout_width="match_parent"
@@ -87,14 +109,18 @@
                 android:layout_marginTop="8dp" />
 
             <!-- Botón: Crear equipo -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCrearEquipo"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Crear Equipo"
-                android:textColor="@android:color/white"
+                android:layout_marginTop="32dp"
                 android:backgroundTint="@color/colorPrimario"
-                android:layout_marginTop="32dp" />
+                android:text="Crear Equipo"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                app:cornerRadius="20dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+

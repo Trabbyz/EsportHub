@@ -8,16 +8,27 @@ public class Equipo {
     private List<Jugador> miembros;
     private int maxJugadores;
     private List<Partido> partidos;
+    private List<String> idMiembros;
 
     public Equipo() {
     }
 
-    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos) {
+    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos,List<String> idMiembros) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.miembros = miembros;
         this.maxJugadores = maxJugadores;
         this.partidos = partidos;
+        this.idMiembros = idMiembros;
+    }
+
+
+    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<String> idMiembros) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.miembros = miembros;
+        this.maxJugadores = maxJugadores;
+        this.idMiembros = idMiembros;
     }
 
     public int getMaxJugadores() {
@@ -58,5 +69,13 @@ public class Equipo {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public List<String> getIdMiembros() {
+        return idMiembros;
+    }
+
+    public void setIdMiembros(List<String> idMiembros) {
+        this.idMiembros = idMiembros;
     }
 }

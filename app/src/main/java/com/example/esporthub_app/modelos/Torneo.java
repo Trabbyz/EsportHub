@@ -10,11 +10,12 @@ public class Torneo {
     private String fechaFin;
     private List<Equipo> participantes;
     private String estado;
+    private int maxParticipantes;
 
     public Torneo() {
     }
 
-    public Torneo(String descripcion, String estado, String fechaFin, String fechaInicio, String idTorneo, String nombre, List<Equipo> participantes) {
+    public Torneo(String descripcion, String estado, String fechaFin, String fechaInicio, String idTorneo, String nombre, List<Equipo> participantes,int maxParticipantes) {
         this.descripcion = descripcion;
         this.estado = estado;
         this.fechaFin = fechaFin;
@@ -22,6 +23,7 @@ public class Torneo {
         this.idTorneo = idTorneo;
         this.nombre = nombre;
         this.participantes = participantes;
+        this.maxParticipantes = 16;
     }
 
     public String getDescripcion() {
@@ -78,5 +80,13 @@ public class Torneo {
 
     public void setParticipantes(List<Equipo> participantes) {
         this.participantes = participantes;
+    }
+
+    public int getMaxParticipantes() {
+        return maxParticipantes;
+    }
+
+    public void setMaxParticipantes(int maxParticipantes) {
+        this.maxParticipantes = maxParticipantes;
     }
 }

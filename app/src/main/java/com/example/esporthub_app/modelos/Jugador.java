@@ -3,21 +3,32 @@ package com.example.esporthub_app.modelos;
 import java.util.List;
 
 public class Jugador {
+    private String uid;
     private String nombre;
-    private String idJugador;
-    private String idEquipo;
+    private String equipoActual;
     private String rolJuego;
     private List<Equipo> equiposFavoritos;
 
     public Jugador() {
     }
 
-    public Jugador(String nombre, String idJugador, String idEquipo, String rolJuego, List<Equipo> equiposFavoritos) {
+    public Jugador(String id, String nombre, String rolJuego) {
+        this.uid = id;
         this.nombre = nombre;
-        this.idJugador = idJugador;
-        this.idEquipo = idEquipo;
+        this.rolJuego = rolJuego;
+    }
+
+    public Jugador(String uid,String nombre, String equipoActual, String rolJuego, List<Equipo> equiposFavoritos) {
+        this.uid = uid;
+        this.nombre = nombre;
+        this.equipoActual = equipoActual;
         this.rolJuego = rolJuego;
         this.equiposFavoritos = equiposFavoritos;
+    }
+
+    public Jugador(String nombre, String rolJuego) {
+        this.nombre = nombre;
+        this.rolJuego = rolJuego;
     }
 
     public List<Equipo> getEquiposFavoritos() {
@@ -28,28 +39,28 @@ public class Jugador {
         this.equiposFavoritos = equiposFavoritos;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String id) {
+        this.uid = id;
+    }
+
+    public String getEquipoActual() {
+        return equipoActual;
+    }
+
+    public void setEquipoActual(String equipoActual) {
+        this.equipoActual = equipoActual;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getIdJugador() {
-        return idJugador;
-    }
-
-    public void setIdJugador(String id) {
-        this.idJugador = id;
-    }
-
-    public String getIdEquipo() {
-        return idEquipo;
-    }
-
-    public void setIdEquipo(String idEquipo) {
-        this.idEquipo = idEquipo;
     }
 
     public String getRolJuego() {

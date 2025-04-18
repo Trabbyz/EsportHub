@@ -78,6 +78,27 @@
         android:padding="10dp"
         android:textSize="18sp" />
 
+
+    <!-- Spinner: Rol del Juego  -->
+    <TextView
+        android:id="@+id/textRolJuego"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Selecciona tu rol en el juego"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spinnerRolJuego"
+        android:layout_width="365dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+
     <!-- Botón de Registro -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegistrarse"

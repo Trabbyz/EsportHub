@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/pantallaMisTorneos"
+    android:id="@+id/pantallaVerMisTorneos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorFondo"
     android:fitsSystemWindows="true">
 
-    <!-- Toolbar -->
+    <!-- Toolbar con título de pantalla -->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarCrearEquipo"
+        android:id="@+id/toolbarMisTorneos"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:title="Mis Torneos"
         app:titleTextColor="@android:color/white" />
 
-    <!-- RecyclerView -->
+    <!-- RecyclerView para mostrar los torneos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTorneos"
         android:layout_width="match_parent"
@@ -25,15 +25,33 @@
         android:padding="16dp"
         android:scrollbars="vertical" />
 
-    <!-- Texto para cuando no hay torneos -->
-    <TextView
-        android:id="@+id/textNoTorneos"
-        android:layout_width="wrap_content"
+    <!-- Contenedor para mensaje y botón cuando no hay torneos -->
+    <LinearLayout
+        android:id="@+id/layoutSinTorneos"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No hay torneos disponibles"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:gravity="center"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/textNoTorneos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No hay torneos disponibles"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:paddingBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnBuscarTorneos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buscar torneos" />
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 

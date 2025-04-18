@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJugadoresSeleccion.ViewHolder> {
 
     private List<Jugador> listaJugadores;
-    private Set<Jugador> jugadoresSeleccionados = new HashSet<>();
+    private List<Jugador> jugadoresSeleccionados = new ArrayList<>();
     private int maxSeleccion = 5;
     private OnJugadorSeleccionChangeListener listener;
 
@@ -30,7 +31,7 @@ public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJ
         this.listener = listener;
     }
 
-    public Set<Jugador> getSeleccionados() {
+    public List<Jugador> getSeleccionados() {
         return jugadoresSeleccionados;
     }
 
@@ -45,14 +46,22 @@ public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJ
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Jugador jugador = listaJugadores.get(position);
-        holder.checkBox.setText(jugador.getNombre());
-        holder.checkBox.setOnCheckedChangeListener(null); // previene bugs de reciclaje
+
+        // Asignar nombre y rol
+        holder.nombreTextView.setText(jugador.getNombre());
+        holder.rolTextView.setText("Rol: " + jugador.getRolJuego());
+
+        // Evitar bugs de reciclaje
+        holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(jugadoresSeleccionados.contains(jugador));
 
+        // Checkbox listener
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (jugadoresSeleccionados.size() < maxSeleccion) {
-                    jugadoresSeleccionados.add(jugador);
+                    if (!jugadoresSeleccionados.contains(jugador)) {
+                        jugadoresSeleccionados.add(jugador);
+                    }
                 } else {
                     buttonView.setChecked(false);
                     Snackbar.make(buttonView, "Máximo 5 jugadores", Snackbar.LENGTH_SHORT).show();
@@ -61,7 +70,6 @@ public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJ
                 jugadoresSeleccionados.remove(jugador);
             }
 
-            // Notificar al listener
             if (listener != null) {
                 listener.onJugadorSeleccionChange(jugadoresSeleccionados.size());
             }
@@ -74,17 +82,21 @@ public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJ
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView nombreTextView, rolTextView;
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            nombreTextView = itemView.findViewById(R.id.textNombreJugador);
+            rolTextView = itemView.findViewById(R.id.textRolJugador);
             checkBox = itemView.findViewById(R.id.checkBoxJugador);
         }
     }
 
-    // INTERFAZ INTERNA (opción 2)
     public interface OnJugadorSeleccionChangeListener {
         void onJugadorSeleccionChange(int cantidadSeleccionados);
     }
 }
+
+
 

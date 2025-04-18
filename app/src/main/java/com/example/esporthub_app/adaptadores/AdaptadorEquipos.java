@@ -26,7 +26,7 @@ public class AdaptadorEquipos extends RecyclerView.Adapter<AdaptadorEquipos.Equi
     @Override
     public EquipoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_equipo, parent, false);
+                .inflate(R.layout.item_equipoactual, parent, false);
         return new EquipoViewHolder(view);
     }
 

@@ -17,7 +17,7 @@ public class Pantalla_InicioAdministradores extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pantalla_inicio_administradores);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pantallaMisTorneos), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pantallaEquiposDisponibles), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
