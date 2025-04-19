@@ -15,15 +15,15 @@ public class Torneo {
     public Torneo() {
     }
 
-    public Torneo(String descripcion, String estado, String fechaFin, String fechaInicio, String idTorneo, String nombre, List<Equipo> participantes,int maxParticipantes) {
-        this.descripcion = descripcion;
-        this.estado = estado;
-        this.fechaFin = fechaFin;
-        this.fechaInicio = fechaInicio;
+    public Torneo(String idTorneo, String nombre, String descripcion, String fechaInicio, String fechaFin, String estado, int maxParticipantes, List<Equipo> participantes) {
         this.idTorneo = idTorneo;
         this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
+        this.maxParticipantes = maxParticipantes;
         this.participantes = participantes;
-        this.maxParticipantes = 16;
     }
 
     public String getDescripcion() {

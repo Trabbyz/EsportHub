@@ -1,7 +1,11 @@
 package com.example.esporthub_app.vistas.equipos;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorEquiposDisponibles;
 import com.example.esporthub_app.modelos.Equipo;
+import com.example.esporthub_app.modelos.Jugador;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +35,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
     private List<Equipo> listaEquipos;
     private AdaptadorEquiposDisponibles adapter;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +47,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
             return insets;
         });
 
+        // Setup de Toolbar
         toolbar = findViewById(R.id.toolbarEquiposDisponibles);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -48,46 +57,182 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
+        // Inicialización del RecyclerView
         recyclerView = findViewById(R.id.recyclerEquiposDisponibles);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Inicialización de Firestore y lista de equipos
+        db = FirebaseFirestore.getInstance();
         listaEquipos = new ArrayList<>();
-        adapter = new AdaptadorEquiposDisponibles(listaEquipos, this, new AdaptadorEquiposDisponibles.OnEquipoClickListener() {
-            @Override
-            public void onVerDetalles(Equipo equipo) {
 
-            }
+        // Inicialización del adaptador
+        adapter = new AdaptadorEquiposDisponibles(
+                listaEquipos,
+                new ArrayList<>(), // Lista de IDs de documentos (aún vacía)
+                this,
+                new AdaptadorEquiposDisponibles.OnEquipoClickListener() {
+                    @Override
+                    public void onVerDetalles(Equipo equipo) {
+                        // Acción para ver detalles del equipo
+                        Intent intent = new Intent(Pantalla_EquiposDisponibles.this, Pantalla_VerDetallesEquipo.class);
+                        startActivity(intent);
+                    }
 
-            @Override
-            public void onUnirme(Equipo equipo) {
+                    @Override
+                    public void onUnirme(Equipo equipo, String idDocEquipo) {
+                        // Acción para unirse al equipo
+                        unirmeAlEquipo(equipo, idDocEquipo);
+                    }
+                });
 
-            }
-        });
+        // Asignar el adaptador al RecyclerView
         recyclerView.setAdapter(adapter);
 
-        db = FirebaseFirestore.getInstance();
-
+        // Cargar los equipos de Firestore
         cargarEquipos();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void cargarEquipos() {
-        db.collection("equipos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    listaEquipos.clear();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        Equipo equipo = doc.toObject(Equipo.class);
+        String uidJugadorActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                        if (equipo != null && equipo.getMiembros() != null && equipo.getMiembros().size() < equipo.getMaxJugadores()) {
-                            listaEquipos.add(equipo);
+        // Buscar el jugador actual por su UID
+        db.collection("jugadores").whereEqualTo("uid", uidJugadorActual).get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot jugadorDoc = querySnapshot.getDocuments().get(0);
+                        Jugador jugador = jugadorDoc.toObject(Jugador.class);
+
+                        if (jugador == null) {
+                            Snackbar.make(findViewById(android.R.id.content), "No se encontraron datos del jugador", Snackbar.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        String equipoActual = jugador.getEquipoActual(); // nombre del equipo actual
+
+                        // Obtener equipos desde Firestore
+                        db.collection("equipos").get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    listaEquipos.clear();
+                                    List<String> listaIdsDocumentos = new ArrayList<>();
+
+                                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                        Equipo equipo = doc.toObject(Equipo.class);
+                                        String idDoc = doc.getId();
+
+                                        boolean esMiEquipo = equipo.getNombre().equals(equipoActual);
+                                        boolean equipoDisponible = equipo.getMiembros() != null &&
+                                                equipo.getMiembros().size() < equipo.getMaxJugadores();
+
+                                        if (!esMiEquipo && equipoDisponible) {
+                                            listaEquipos.add(equipo);
+                                            listaIdsDocumentos.add(idDoc);
+                                        }
+                                    }
+
+                                    // Crear y asignar adaptador
+                                    adapter = new AdaptadorEquiposDisponibles(listaEquipos, listaIdsDocumentos, this, new AdaptadorEquiposDisponibles.OnEquipoClickListener() {
+                                        @Override
+                                        public void onVerDetalles(Equipo equipo) {
+                                            // Aquí usamos el índice de equipo para obtener el idDoc correspondiente
+                                            int position = listaEquipos.indexOf(equipo);
+                                            String idDocEquipo = listaIdsDocumentos.get(position); // Obtener el ID correcto
+
+                                            // Pasar el ID del equipo al Intent
+                                            Intent intent = new Intent(Pantalla_EquiposDisponibles.this, Pantalla_VerDetallesEquipo.class);
+                                            intent.putExtra("idEquipo", idDocEquipo);
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onUnirme(Equipo equipo, String idDocEquipo) {
+                                            unirmeAlEquipo(equipo, idDocEquipo);
+                                        }
+                                    });
+
+                                    recyclerView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Snackbar.make(findViewById(android.R.id.content), "Error al cargar equipos: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                });
+
+                    } else {
+                        Snackbar.make(findViewById(android.R.id.content), "No se encontró tu jugador", Snackbar.LENGTH_SHORT).show();
                     }
-                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "Error al cargar equipos: " + e.getMessage(),
-                            Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener datos del jugador", Snackbar.LENGTH_SHORT).show();
+                });
+    }
+
+
+
+    private void unirmeAlEquipo(Equipo equipo, String idDocEquipo) {
+        String uidJugadorActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Refrescamos el equipo desde Firestore
+        db.collection("equipos").document(idDocEquipo).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Equipo equipoActualizado = documentSnapshot.toObject(Equipo.class);
+
+                    if (equipoActualizado == null) {
+                        Snackbar.make(findViewById(android.R.id.content), "Error al obtener datos del equipo", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (equipoActualizado.getIdMiembros().contains(uidJugadorActual)) {
+                        Snackbar.make(findViewById(android.R.id.content), "Ya perteneces a este equipo", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (equipoActualizado.getIdMiembros().size() >= equipoActualizado.getMaxJugadores()) {
+                        Snackbar.make(findViewById(android.R.id.content), "Este equipo ya está lleno", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Buscar jugador por UID
+                    db.collection("jugadores").whereEqualTo("uid", uidJugadorActual).get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                if (!querySnapshot.isEmpty()) {
+                                    DocumentSnapshot jugadorDoc = querySnapshot.getDocuments().get(0);
+                                    Jugador jugador = jugadorDoc.toObject(Jugador.class);
+
+                                    // Actualizar datos en Firestore
+                                    equipoActualizado.getIdMiembros().add(uidJugadorActual);
+                                    equipoActualizado.getMiembros().add(jugador);
+
+                                    db.collection("equipos").document(idDocEquipo)
+                                            .update("idMiembros", equipoActualizado.getIdMiembros(),
+                                                    "miembros", equipoActualizado.getMiembros())
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("jugadores").document(jugadorDoc.getId())
+                                                        .update("equipoActual", equipoActualizado.getNombre())
+                                                        .addOnSuccessListener(aVoid2 -> {
+                                                            Snackbar.make(findViewById(android.R.id.content), "Te has unido al equipo", Snackbar.LENGTH_SHORT).show();
+                                                            cargarEquipos(); // Recargar lista para reflejar cambios
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            Log.e("Firestore", "Error al actualizar equipoActual del jugador", e);
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("Firestore", "Error al unirse al equipo", e);
+                                                Snackbar.make(findViewById(android.R.id.content), "Error al unirse al equipo", Snackbar.LENGTH_SHORT).show();
+                                            });
+                                } else {
+                                    Log.e("Firestore", "No se encontró ningún jugador con ese UID");
+                                    Snackbar.make(findViewById(android.R.id.content), "No se encontró tu jugador", Snackbar.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Firestore", "Error al buscar el jugador", e);
+                                Snackbar.make(findViewById(android.R.id.content), "Error al obtener datos del jugador", Snackbar.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error al obtener datos del equipo actualizado", e);
+                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener el equipo", Snackbar.LENGTH_SHORT).show();
                 });
     }
 

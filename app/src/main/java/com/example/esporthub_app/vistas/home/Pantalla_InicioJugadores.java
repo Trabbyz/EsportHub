@@ -1,9 +1,7 @@
 package com.example.esporthub_app.vistas.home;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,7 +16,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.vistas.auth.Pantalla_InicioSesion;
-import com.example.esporthub_app.vistas.bienvenida.Pantalla_Bienvenida;
 import com.example.esporthub_app.vistas.equipos.Pantalla_EquiposDisponibles;
 import com.example.esporthub_app.vistas.jugador.Pantalla_VerMisEquipos;
 import com.example.esporthub_app.vistas.jugador.Pantalla_VerMisTorneos;
@@ -27,8 +24,7 @@ import com.example.esporthub_app.vistas.notificaciones.Pantalla_Notificaciones_J
 import com.example.esporthub_app.vistas.settings.Pantalla_AjustesGeneral;
 import com.example.esporthub_app.vistas.torneos.Pantalla_TorneosDisponibles;
 import com.google.android.material.navigation.NavigationView;
-
-import org.jetbrains.annotations.Nullable;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Pantalla_InicioJugadores extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -51,7 +47,7 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
 
         // Obtener referencias a los elementos del layout
         drawerLayout = findViewById(R.id.pantallaInicioJugadores);
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbarUsuario);
         navigationView = findViewById(R.id.nav_view);
         //imgPerfil = findViewById(R.id.imgPerfil);
         // Configurar Toolbar
@@ -99,7 +95,10 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
                 Intent intent = new Intent(Pantalla_InicioJugadores.this, Pantalla_AjustesGeneral.class);
                 startActivity(intent);
             }else if (id == R.id.nav_cerrar_sesion) {
-
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(Pantalla_InicioJugadores.this, Pantalla_InicioSesion.class);
+                startActivity(intent);
+                finish();
             }
             // Cerrar el Drawer cuando se selecciona un ítem
             drawerLayout.closeDrawer(GravityCompat.START);

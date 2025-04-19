@@ -13,6 +13,27 @@
         android:theme="@style/Theme.EsportHub_APP"
         tools:targetApi="31">
         <activity
+            android:name=".vistas.jugador.Pantalla_VerJugadores"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.equipos.Pantalla_GestionarEquipos"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.partidos.Pantalla_EliminarPartido"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.partidos.Pantalla_CrearPartido"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.torneos.Pantalla_EliminarTorneo"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.torneos.Pantalla_CrearTorneo"
+            android:exported="false" />
+        <activity
+            android:name=".vistas.equipos.Pantalla_VerDetallesEquipo"
+            android:exported="false" />
+        <activity
             android:name=".vistas.equipos.Pantalla_CrearEquipo"
             android:exported="false" />
         <activity

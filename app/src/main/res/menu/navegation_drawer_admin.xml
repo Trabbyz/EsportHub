@@ -1,0 +1,52 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Encabezado del Drawer -->
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_crear_torneo"
+            android:icon="@drawable/ic_trophy"
+            android:title="Crear Torneo" />
+
+        <item
+            android:id="@+id/nav_eliminar_torneo"
+            android:icon="@drawable/papelera"
+            android:title="Eliminar Torneo" />
+
+
+        <item
+            android:id="@+id/nav_crear_partido"
+            android:icon="@drawable/partido"
+            android:title="Crear Partido" />
+
+        <item
+            android:id="@+id/nav_eliminar_partido"
+            android:icon="@drawable/papelera"
+            android:title="Eliminar Partido" />
+    </group>
+
+    <!-- Sección de Gestión de usuarios -->
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_ver_jugadores"
+            android:icon="@drawable/ic_avatar"
+            android:title="Ver Jugadores" />
+
+        <item
+            android:id="@+id/nav_gestionar_equipos"
+            android:icon="@drawable/ic_teams"
+            android:title="Gestionar Equipos" />
+
+    </group>
+
+
+    <group android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/nav_cerrar_sesion"
+            android:icon="@drawable/ic_logout"
+            android:title="Cerrar Sesión" />
+    </group>
+
+
+</menu>

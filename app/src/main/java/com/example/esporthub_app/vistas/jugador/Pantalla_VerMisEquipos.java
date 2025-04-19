@@ -36,6 +36,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
     private Button btnCrearEquipo,btnBuscarEquipos;
     private RecyclerView recyclerView;
     private List<Equipo> listaEquipos;
+    private List<String> listaIdsDocumentos;
     private Toolbar toolbarMisEquipos;
     private FirebaseFirestore db;
     @Override
@@ -55,6 +56,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
         toolbarMisEquipos = findViewById(R.id.toolbarCrearEquipo);
 
         listaEquipos = new ArrayList<>();
+        listaIdsDocumentos = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
         setSupportActionBar(toolbarMisEquipos);
         if (getSupportActionBar() != null) {
@@ -103,9 +105,11 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                     listaEquipos.clear();
                     for (QueryDocumentSnapshot doc : query) {
                         Equipo equipo = doc.toObject(Equipo.class);
+                        listaIdsDocumentos.add(doc.getId());
                         for (Jugador j : equipo.getMiembros()) {
                             if (j.getUid().equals(uidJugador)) {
                                 listaEquipos.add(equipo);
+
                                 break;
                             }
                         }
@@ -118,7 +122,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                         recyclerView.setVisibility(View.VISIBLE);
                         layoutSinEquipos.setVisibility(View.GONE);
                         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                        recyclerView.setAdapter(new AdaptadorEquipos(listaEquipos));
+                        recyclerView.setAdapter(new AdaptadorEquipos(listaEquipos,listaIdsDocumentos));
                     }
                 })
                 .addOnFailureListener(e -> {

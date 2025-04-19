@@ -18,16 +18,18 @@ import java.util.List;
 
 public class AdaptadorEquiposDisponibles extends RecyclerView.Adapter<AdaptadorEquiposDisponibles.EquipoViewHolder> {
     private List<Equipo> listaEquipos;
+    private List<String> listaIdsDocumentos;  // Lista para almacenar los IDs de los documentos
     private Context context;
     private OnEquipoClickListener listener;
 
     public interface OnEquipoClickListener {
         void onVerDetalles(Equipo equipo);
-        void onUnirme(Equipo equipo);
+        void onUnirme(Equipo equipo, String idDocEquipo);  // Pasar el idDocEquipo aquí
     }
 
-    public AdaptadorEquiposDisponibles(List<Equipo> listaEquipos, Context context, OnEquipoClickListener listener) {
+    public AdaptadorEquiposDisponibles(List<Equipo> listaEquipos, List<String> listaIdsDocumentos, Context context, OnEquipoClickListener listener) {
         this.listaEquipos = listaEquipos;
+        this.listaIdsDocumentos = listaIdsDocumentos;  // Inicializar la lista de IDs de documentos
         this.context = context;
         this.listener = listener;
     }
@@ -46,8 +48,11 @@ public class AdaptadorEquiposDisponibles extends RecyclerView.Adapter<AdaptadorE
         int miembrosActuales = (equipo.getMiembros() != null) ? equipo.getMiembros().size() : 0;
         holder.textMiembros.setText("Miembros: " + miembrosActuales + "/" + equipo.getMaxJugadores());
 
+        // Obtener el ID del documento del equipo
+        String idDocEquipo = listaIdsDocumentos.get(position);
+
         holder.btnVerDetalles.setOnClickListener(v -> listener.onVerDetalles(equipo));
-        holder.btnUnirme.setOnClickListener(v -> listener.onUnirme(equipo));
+        holder.btnUnirme.setOnClickListener(v -> listener.onUnirme(equipo, idDocEquipo));  // Pasar el idDocEquipo
     }
 
     @Override

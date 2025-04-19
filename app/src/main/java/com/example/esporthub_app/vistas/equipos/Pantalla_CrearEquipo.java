@@ -22,6 +22,7 @@ import com.example.esporthub_app.adaptadores.AdaptadorJugadoresSeleccion;
 import com.example.esporthub_app.modelos.Equipo;
 import com.example.esporthub_app.modelos.Jugador;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -73,6 +74,8 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
     }
 
     private void cargarJugadoresSinEquipo() {
+        String idUsuarioActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         db.collection("jugadores")
                 .whereEqualTo("equipoActual", "")
                 .get()
@@ -81,6 +84,10 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                         List<Jugador> jugadores = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : jugadorTask.getResult()) {
                             String id = doc.getString("uid");
+
+                            // Excluir al usuario actual
+                            if (id == null || id.equals(idUsuarioActual)) continue;
+
                             String nombre = doc.getString("nombre");
                             String rolJuego = doc.getString("rolJuego");
                             Jugador jugador = new Jugador(id, nombre, rolJuego);
@@ -101,6 +108,7 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                 });
     }
 
+
     private void guardarEquipo() {
         String nombre = etNombreEquipo.getText().toString().trim();
         String descripcion = etDescripcionEquipo.getText().toString().trim();
@@ -112,54 +120,93 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
             return;
         }
 
-        // Obtener ID del usuario actual
         String idUsuarioActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         List<String> idMiembros = new ArrayList<>();
         for (Jugador j : miembros) {
-            idMiembros.add(j.getUid());  // Usar el UID del jugador en lugar del ID del documento
+            idMiembros.add(j.getUid());
         }
 
-        // Añadir el ID del usuario creador del equipo
         if (!idMiembros.contains(idUsuarioActual)) {
-            idMiembros.add(idUsuarioActual);
+            // Buscar en Firestore el jugador actual por UID
+            db.collection("jugadores")
+                    .whereEqualTo("uid", idUsuarioActual)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (!snapshot.isEmpty()) {
+                            DocumentSnapshot doc = snapshot.getDocuments().get(0);
+                            Jugador jugadorActual = doc.toObject(Jugador.class);
+                            miembros.add(jugadorActual); // Añadir al listado de miembros
+                            idMiembros.add(idUsuarioActual); // Añadir a IDs
+
+                            // Crear equipo con el creador ya incluido
+                            Equipo nuevoEquipo = new Equipo(nombre, descripcion, miembros, 5, idMiembros);
+
+                            db.collection("equipos")
+                                    .add(nuevoEquipo)
+                                    .addOnSuccessListener(documentReference -> {
+                                        actualizarJugadoresConEquipoActual(miembros, nombre);
+                                        Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Error al crear equipo", e);
+                                        Toast.makeText(this, "Error al guardar el equipo", Toast.LENGTH_SHORT).show();
+                                    });
+
+                        } else {
+                            Toast.makeText(this, "No se encontró el usuario actual en la colección de jugadores", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error al buscar el jugador actual", e);
+                        Toast.makeText(this, "Error al obtener datos del jugador actual", Toast.LENGTH_SHORT).show();
+                    });
+
+        } else {
+            // Ya está incluido el jugador, simplemente guardar el equipo
+            Equipo nuevoEquipo = new Equipo(nombre, descripcion, miembros, 5, idMiembros);
+
+            db.collection("equipos")
+                    .add(nuevoEquipo)
+                    .addOnSuccessListener(documentReference -> {
+                        actualizarJugadoresConEquipoActual(miembros, nombre);
+                        Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error al crear equipo", e);
+                        Toast.makeText(this, "Error al guardar el equipo", Toast.LENGTH_SHORT).show();
+                    });
         }
 
-        Equipo nuevoEquipo = new Equipo(nombre, descripcion, miembros, 5, idMiembros);
-
-        // Guardar el equipo en Firestore
-        db.collection("equipos")
-                .add(nuevoEquipo)
-                .addOnSuccessListener(documentReference -> {
-                    // Actualizar los jugadores seleccionados para asignarles el equipo actual
-                    actualizarJugadoresConEquipoActual(miembros, nombre);
-
-
-
-                    Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error al crear equipo", e);
-                    Toast.makeText(this, "Error al guardar el equipo", Toast.LENGTH_SHORT).show();
-                });
     }
 
 
     private void actualizarJugadoresConEquipoActual(List<Jugador> miembros, String nombreEquipo) {
         for (Jugador jugador : miembros) {
-            // Actualizar el jugador usando su ID único de Firestore
             db.collection("jugadores")
-                    .document(jugador.getUid()) // Usa el ID del jugador para identificarlo
-                    .update("equipoActual", nombreEquipo)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("Firestore", "Jugador actualizado con equipo actual: " + nombreEquipo);
+                    .whereEqualTo("uid", jugador.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            db.collection("jugadores")
+                                    .document(doc.getId()) // Aquí ya tienes el ID real
+                                    .update("equipoActual", nombreEquipo)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Jugador actualizado con equipo actual: " + nombreEquipo);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Error al actualizar jugador: " + jugador.getNombre(), e);
+                                    });
+                        }
                     })
                     .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Error al actualizar jugador: " + jugador.getNombre(), e);
+                        Log.e("Firestore", "Error buscando jugador: " + jugador.getNombre(), e);
                     });
         }
     }
+
 
 
 }
