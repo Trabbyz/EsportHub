@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
+    android:padding="12dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Nombre del Partido (Equipo1 vs Equipo2) -->
+        <TextView
+            android:id="@+id/txtPartido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Equipo1 vs Equipo2"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"/>
+
+        <!-- Botón Eliminar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminarPartido"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Eliminar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_red_light"
+            />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

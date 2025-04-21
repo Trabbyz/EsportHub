@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pantallaPerfilJugador"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFondo">
+
+    <!-- Barra de herramientas -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPerfilJugador"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Perfil del Jugador" />
+
+    <!-- Contenido principal -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:clipToPadding="false"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- Foto de perfil -->
+            <ImageView
+                android:id="@+id/imgPerfilJugador"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="Foto de perfil"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_avatar" />
+
+            <!-- Nombre del jugador -->
+            <TextView
+                android:id="@+id/txtNombreJugador"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Nombre del Jugador"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Equipo Actual -->
+            <TextView
+                android:id="@+id/txtEquipoActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Equipo Actual"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <!-- Rol de Juego -->
+            <TextView
+                android:id="@+id/txtRolJuego"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Rol de Juego"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <!-- Equipos Favoritos -->
+            <TextView
+                android:id="@+id/txtEquiposFavoritos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Equipos Favoritos"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <!-- RecyclerView para mostrar equipos favoritos -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerEquiposFavoritos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

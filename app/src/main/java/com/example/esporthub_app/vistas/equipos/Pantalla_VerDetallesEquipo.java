@@ -18,7 +18,6 @@ import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorMiembroEquipo;
 import com.example.esporthub_app.modelos.Jugador;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;

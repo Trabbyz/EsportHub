@@ -1,8 +1,10 @@
 package com.example.esporthub_app.modelos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Equipo {
+    private String id;
     private String nombre;
     private String descripcion;
     private List<Jugador> miembros;
@@ -13,7 +15,7 @@ public class Equipo {
     public Equipo() {
     }
 
-    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos,List<String> idMiembros) {
+    public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos, List<String> idMiembros) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.miembros = miembros;
@@ -22,6 +24,20 @@ public class Equipo {
         this.idMiembros = idMiembros;
     }
 
+    public Equipo(String id,String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<Partido> partidos,List<String> idMiembros) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.miembros = miembros;
+        this.maxJugadores = maxJugadores;
+        this.partidos = partidos;
+        this.idMiembros = idMiembros;
+    }
+
+    public Equipo(String nombre,String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
 
     public Equipo(String nombre, String descripcion, List<Jugador> miembros, int maxJugadores, List<String> idMiembros) {
         this.nombre = nombre;
@@ -72,10 +88,20 @@ public class Equipo {
     }
 
     public List<String> getIdMiembros() {
-        return idMiembros;
+        return idMiembros != null ? idMiembros : new ArrayList<>();
     }
 
     public void setIdMiembros(List<String> idMiembros) {
         this.idMiembros = idMiembros;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
 }

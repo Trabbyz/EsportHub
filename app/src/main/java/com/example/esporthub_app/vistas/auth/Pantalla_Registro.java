@@ -66,7 +66,7 @@ public class Pantalla_Registro extends AppCompatActivity {
 
         // Cargar roles en el Spinner
         String[] roles = {"Selecciona tu rol", "Jugador", "Administrador"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, roles);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRoles.setAdapter(adapter);
 
@@ -167,6 +167,7 @@ public class Pantalla_Registro extends AppCompatActivity {
         String rol          = spinnerRoles.getSelectedItem().toString();
         String rolJuegoSeleccionado = rol.equals("Jugador") ? spinnerRolJuego.getSelectedItem().toString() : null;
         Log.d("Firestore","Rol Juego : "+rolJuegoSeleccionado);
+
         // Validar campos
         if (nombreUs.isEmpty() || apellidosTexto.isEmpty() ||
                 correo.isEmpty() || password.isEmpty() ||
@@ -177,24 +178,31 @@ public class Pantalla_Registro extends AppCompatActivity {
             return;
         }
 
-        String uidJugador = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Crear objeto Usuario (modelo)
         Usuario nuevoUsuario = new Usuario(nombreUs, apellidosTexto, correo, password, rol, rolJuegoSeleccionado);
-        Jugador nuevoJugador = new Jugador(uidJugador,nombreUs,"",rolJuegoSeleccionado,null);
+        String uidJugador = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Crear objeto Jugador
+        Jugador nuevoJugador = new Jugador(uidJugador, nombreUs, "", rolJuegoSeleccionado, null);
+
         // Guardar en Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         // Guardar en Firestore (colección "usuarios")
         db.collection("usuarios")
                 .add(nuevoUsuario)
                 .addOnSuccessListener(documentReference -> {
-                    // Mostrar mensaje
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "Usuario creado con éxito",
-                            Snackbar.LENGTH_LONG).show();
+                    // Obtener el ID del documento creado
+                    String idUsuario = documentReference.getId();
+                    Log.d("Firestore", "ID de usuario guardado: " + idUsuario);
 
-                    // COMPROBAR SI ES Jugador
+
+
+                    // Si el rol es "Jugador", también agregamos este jugador a la colección "jugadores"
                     if (rol.equals("Jugador")) {
-                        // Agregar también a la colección "jugadores"
+                        nuevoJugador.setIdUsuario(idUsuario);  // Asignamos el ID a la clase Jugador
+
+                        // Guardar el jugador en la colección "jugadores"
                         db.collection("jugadores")
                                 .add(nuevoJugador)
                                 .addOnSuccessListener(empleadoRef -> {
@@ -204,6 +212,11 @@ public class Pantalla_Registro extends AppCompatActivity {
                                     Log.e("Firestore", "Error al guardar jugador en 'jugadores'", e);
                                 });
                     }
+
+                    // Mostrar mensaje
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "Usuario creado con éxito",
+                            Snackbar.LENGTH_LONG).show();
 
                     // Redirigir a pantalla de login
                     updateUI();
@@ -215,6 +228,7 @@ public class Pantalla_Registro extends AppCompatActivity {
                     Log.e("Firestore", "Error al guardar usuario", e);
                 });
     }
+
 
     private void updateUI() {
         Intent intent = new Intent(this, Pantalla_InicioSesion.class);

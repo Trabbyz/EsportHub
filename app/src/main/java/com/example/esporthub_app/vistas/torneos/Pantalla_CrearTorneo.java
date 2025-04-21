@@ -2,11 +2,9 @@ package com.example.esporthub_app.vistas.torneos;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,7 +30,7 @@ public class Pantalla_CrearTorneo extends AppCompatActivity {
 
     private TextInputEditText etNombreTorneo, etDescripcion, etFechaInicio, etFechaFin, etMaxParticipantes;
     private MaterialButton btnCrearTorneo;
-
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +50,13 @@ public class Pantalla_CrearTorneo extends AppCompatActivity {
         etFechaFin = findViewById(R.id.etFechaFin);
         etMaxParticipantes = findViewById(R.id.etMaxParticipantes);
         btnCrearTorneo = findViewById(R.id.btnCrearTorneo);
+        toolbar = findViewById(R.id.toolbarCrearTorneo);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         // Mostrar DatePicker al hacer clic
         etFechaInicio.setOnClickListener(view -> mostrarDatePicker(etFechaInicio));

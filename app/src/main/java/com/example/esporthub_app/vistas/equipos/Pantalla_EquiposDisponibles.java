@@ -103,6 +103,10 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
                         DocumentSnapshot jugadorDoc = querySnapshot.getDocuments().get(0);
                         Jugador jugador = jugadorDoc.toObject(Jugador.class);
 
+                        if (jugador.getEquipoActual() != null && !jugador.getEquipoActual().isEmpty()) {
+                            Snackbar.make(findViewById(android.R.id.content), "Ya perteneces a un equipo", Snackbar.LENGTH_SHORT).show();
+                            return;
+                        }
                         if (jugador == null) {
                             Snackbar.make(findViewById(android.R.id.content), "No se encontraron datos del jugador", Snackbar.LENGTH_SHORT).show();
                             return;

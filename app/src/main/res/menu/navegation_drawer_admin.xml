@@ -13,7 +13,6 @@
             android:icon="@drawable/papelera"
             android:title="Eliminar Torneo" />
 
-
         <item
             android:id="@+id/nav_crear_partido"
             android:icon="@drawable/partido"

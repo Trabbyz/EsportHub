@@ -1,6 +1,6 @@
 package com.example.esporthub_app.vistas.jugador;
 
-import android.graphics.Color;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;

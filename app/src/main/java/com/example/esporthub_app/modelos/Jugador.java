@@ -3,6 +3,7 @@ package com.example.esporthub_app.modelos;
 import java.util.List;
 
 public class Jugador {
+    private String idUsuario;
     private String uid;
     private String nombre;
     private String equipoActual;
@@ -19,6 +20,15 @@ public class Jugador {
     }
 
     public Jugador(String uid,String nombre, String equipoActual, String rolJuego, List<Equipo> equiposFavoritos) {
+        this.uid = uid;
+        this.nombre = nombre;
+        this.equipoActual = equipoActual;
+        this.rolJuego = rolJuego;
+        this.equiposFavoritos = equiposFavoritos;
+    }
+
+    public Jugador(String idUsuario, String uid, String nombre, String equipoActual, String rolJuego, List<Equipo> equiposFavoritos) {
+        this.idUsuario = idUsuario;
         this.uid = uid;
         this.nombre = nombre;
         this.equipoActual = equipoActual;
@@ -69,6 +79,14 @@ public class Jugador {
 
     public void setRolJuego(String rolJuego) {
         this.rolJuego = rolJuego;
+    }
+
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
 

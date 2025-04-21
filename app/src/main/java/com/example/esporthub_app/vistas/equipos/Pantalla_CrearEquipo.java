@@ -128,7 +128,6 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
         }
 
         if (!idMiembros.contains(idUsuarioActual)) {
-            // Buscar en Firestore el jugador actual por UID
             db.collection("jugadores")
                     .whereEqualTo("uid", idUsuarioActual)
                     .get()
@@ -136,18 +135,25 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                         if (!snapshot.isEmpty()) {
                             DocumentSnapshot doc = snapshot.getDocuments().get(0);
                             Jugador jugadorActual = doc.toObject(Jugador.class);
-                            miembros.add(jugadorActual); // Añadir al listado de miembros
-                            idMiembros.add(idUsuarioActual); // Añadir a IDs
+                            miembros.add(jugadorActual);
+                            idMiembros.add(idUsuarioActual);
 
-                            // Crear equipo con el creador ya incluido
                             Equipo nuevoEquipo = new Equipo(nombre, descripcion, miembros, 5, idMiembros);
-
                             db.collection("equipos")
                                     .add(nuevoEquipo)
                                     .addOnSuccessListener(documentReference -> {
-                                        actualizarJugadoresConEquipoActual(miembros, nombre);
-                                        Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
-                                        finish();
+                                        // 🔧 Actualizar el campo idEquipo con el ID generado por Firestore
+                                        String idGenerado = documentReference.getId();
+                                        documentReference.update("idEquipo", idGenerado)
+                                                .addOnSuccessListener(unused -> {
+                                                    actualizarJugadoresConEquipoActual(miembros, nombre);
+                                                    Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("Firestore", "Error al actualizar el ID del equipo", e);
+                                                    Toast.makeText(this, "Error al guardar el ID del equipo", Toast.LENGTH_SHORT).show();
+                                                });
                                     })
                                     .addOnFailureListener(e -> {
                                         Log.e("Firestore", "Error al crear equipo", e);
@@ -164,15 +170,23 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                     });
 
         } else {
-            // Ya está incluido el jugador, simplemente guardar el equipo
             Equipo nuevoEquipo = new Equipo(nombre, descripcion, miembros, 5, idMiembros);
 
             db.collection("equipos")
                     .add(nuevoEquipo)
                     .addOnSuccessListener(documentReference -> {
-                        actualizarJugadoresConEquipoActual(miembros, nombre);
-                        Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
-                        finish();
+                        // 🔧 También aquí, actualizar el campo idEquipo
+                        String idGenerado = documentReference.getId();
+                        documentReference.update("idEquipo", idGenerado)
+                                .addOnSuccessListener(unused -> {
+                                    actualizarJugadoresConEquipoActual(miembros, nombre);
+                                    Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Firestore", "Error al actualizar el ID del equipo", e);
+                                    Toast.makeText(this, "Error al guardar el ID del equipo", Toast.LENGTH_SHORT).show();
+                                });
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error al crear equipo", e);
