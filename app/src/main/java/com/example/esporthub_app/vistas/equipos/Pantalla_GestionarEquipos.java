@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -36,6 +37,7 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
     private FirebaseFirestore db;
     private List<Equipo> listaEquipos = new ArrayList<>();
     private AdaptadorEquiposAdmin adaptadorEquipos;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,14 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
         recyclerEquipos = findViewById(R.id.recyclerEquipos);
         fabAgregarEquipo = findViewById(R.id.fabAgregarEquipo);
         recyclerEquipos.setLayoutManager(new LinearLayoutManager(this));
+        toolbar = findViewById(R.id.toolbarEquipos);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         adaptadorEquipos = new AdaptadorEquiposAdmin(listaEquipos, this::editarEquipo, this::eliminarEquipo);
         recyclerEquipos.setAdapter(adaptadorEquipos);

@@ -2,6 +2,9 @@ package com.example.esporthub_app.vistas.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -15,26 +18,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.vistas.auth.Pantalla_InicioSesion;
-import com.example.esporthub_app.vistas.equipos.Pantalla_EquiposDisponibles;
+
 import com.example.esporthub_app.vistas.equipos.Pantalla_GestionarEquipos;
 import com.example.esporthub_app.vistas.jugador.Pantalla_VerJugadores;
-import com.example.esporthub_app.vistas.jugador.Pantalla_VerMisEquipos;
-import com.example.esporthub_app.vistas.jugador.Pantalla_VerMisTorneos;
+
 import com.example.esporthub_app.vistas.jugador.Pantalla_VerPerfil;
-import com.example.esporthub_app.vistas.notificaciones.Pantalla_Notificaciones_Jugador;
 import com.example.esporthub_app.vistas.partidos.Pantalla_CrearPartido;
 import com.example.esporthub_app.vistas.partidos.Pantalla_EliminarPartido;
-import com.example.esporthub_app.vistas.settings.Pantalla_AjustesGeneral;
 import com.example.esporthub_app.vistas.torneos.Pantalla_CrearTorneo;
 import com.example.esporthub_app.vistas.torneos.Pantalla_EliminarTorneo;
 import com.example.esporthub_app.vistas.torneos.Pantalla_TorneosDisponibles;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Pantalla_InicioAdministradores extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbarAdmin;
+    private FirebaseFirestore db;
+    private TextView txtTorneosActivos,txtPartidosProgramados;
+    private Button btnCrearPartido,btnCrearTorneo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,11 @@ public class Pantalla_InicioAdministradores extends AppCompatActivity {
         drawerLayout = findViewById(R.id.pantallaInicioAdministrador);
         navigationView = findViewById(R.id.nav_view_admin);
         toolbarAdmin = findViewById(R.id.toolbarAdministrador);
+        txtTorneosActivos = findViewById(R.id.txtTorneosActivos);
+        txtPartidosProgramados = findViewById(R.id.txtPartidosProgramados);
+        btnCrearPartido = findViewById(R.id.btnCrearPartido);
+        btnCrearTorneo = findViewById(R.id.btnCrearTorneo);
+        db = FirebaseFirestore.getInstance();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbarAdmin,
                 R.string.navigation_drawer_open,
@@ -86,5 +95,44 @@ public class Pantalla_InicioAdministradores extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+        cargarEstadisticasAdmin();
+
+        btnCrearPartido.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Pantalla_InicioAdministradores.this, Pantalla_CrearPartido.class);
+                startActivity(intent);
+            }
+        });
+
+        btnCrearTorneo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Pantalla_InicioAdministradores.this, Pantalla_CrearTorneo.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void cargarEstadisticasAdmin() {
+        // Torneos activos
+        db.collection("torneos")
+                .whereEqualTo("estado", "Activo")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int totalTorneosActivos = querySnapshot.size();
+                    txtTorneosActivos.setText("Torneos Activos: " + totalTorneosActivos);
+                })
+                .addOnFailureListener(e -> txtTorneosActivos.setText("Torneos Activos: Error"));
+
+        // Partidos programados
+        db.collection("partidos")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int totalPartidos = querySnapshot.size();
+                    txtPartidosProgramados.setText("Partidos Programados: " + totalPartidos);
+                })
+                .addOnFailureListener(e -> txtPartidosProgramados.setText("Partidos Programados: Error"));
     }
 }

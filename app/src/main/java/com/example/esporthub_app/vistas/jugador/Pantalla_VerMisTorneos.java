@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorTorneos;
+import com.example.esporthub_app.modelos.Equipo;
+import com.example.esporthub_app.modelos.Jugador;
 import com.example.esporthub_app.modelos.Torneo;
 import com.example.esporthub_app.vistas.torneos.Pantalla_TorneosDisponibles;
 import com.google.android.material.snackbar.Snackbar;
@@ -41,19 +43,26 @@ public class Pantalla_VerMisTorneos extends AppCompatActivity {
     private FirebaseUser user;
     private List<Torneo> listaTorneos;
     private AdaptadorTorneos adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pantalla_ver_mis_torneos);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pantallaVerMisTorneos), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-
+        // Inicialización de vistas
         toolbar = findViewById(R.id.toolbarMisTorneos);
+        recyclerView = findViewById(R.id.recyclerViewTorneos);
+        layoutSinTorneos = findViewById(R.id.layoutSinTorneos);
+        btnBuscarTorneos = findViewById(R.id.btnBuscarTorneos);
+
+        // Configuración de la barra de herramientas
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,13 +71,14 @@ public class Pantalla_VerMisTorneos extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        recyclerView = findViewById(R.id.recyclerViewTorneos);
-        layoutSinTorneos = findViewById(R.id.layoutSinTorneos);
-        btnBuscarTorneos = findViewById(R.id.btnBuscarTorneos);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listaTorneos = new ArrayList<>();
-        adapter = new AdaptadorTorneos(listaTorneos); // Asegúrate de tener este adapter
+        adapter = new AdaptadorTorneos(listaTorneos, new AdaptadorTorneos.OnAbandonarTorneoListener() {
+            @Override
+            public void onAbandonar(Torneo torneo, String idDocTorneo) {
+                abandonarTorneo(torneo, idDocTorneo);  // Lógica de abandonar torneo
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         db = FirebaseFirestore.getInstance();
@@ -76,38 +86,99 @@ public class Pantalla_VerMisTorneos extends AppCompatActivity {
 
         cargarTorneos();
 
+        // Configuración de la acción para buscar torneos
         btnBuscarTorneos.setOnClickListener(v -> {
-            // Abre la actividad de buscar torneos
             startActivity(new Intent(this, Pantalla_TorneosDisponibles.class));
         });
-}
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void cargarTorneos() {
         if (user == null) return;
+        String uidJugador = user.getUid();
 
         db.collection("torneos")
-                .whereEqualTo("creadorID", user.getUid()) // o campo que relacione al usuario
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     listaTorneos.clear();
 
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            Torneo torneo = doc.toObject(Torneo.class);
-                            listaTorneos.add(torneo);
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Torneo torneo = doc.toObject(Torneo.class);
+                        torneo.setIdTorneo(doc.getId()); // Si necesitas luego el ID
+
+                        boolean estaEnTorneo = false;
+
+                        if (torneo.getParticipantes() != null) {
+                            for (Equipo equipo : torneo.getParticipantes()) {
+                                if (equipo.getMiembros() != null) {
+                                    for (Jugador jugador : equipo.getMiembros()) {
+                                        if (jugador.getUid().equals(uidJugador)) {
+                                            estaEnTorneo = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (estaEnTorneo) break;
+                            }
                         }
 
+                        if (estaEnTorneo) {
+                            listaTorneos.add(torneo);
+                        }
+                    }
+
+                    if (listaTorneos.isEmpty()) {
+                        recyclerView.setVisibility(View.GONE);
+                        layoutSinTorneos.setVisibility(View.VISIBLE);
+                    } else {
                         layoutSinTorneos.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         adapter.notifyDataSetChanged();
-                    } else {
-                        recyclerView.setVisibility(View.GONE);
-                        layoutSinTorneos.setVisibility(View.VISIBLE);
                     }
                 })
                 .addOnFailureListener(e -> {
                     Snackbar.make(findViewById(android.R.id.content), "Error al cargar torneos: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
                 });
     }
+
+
+    // Método para manejar el abandono de un torneo
+    private void abandonarTorneo(Torneo torneo, String idDocTorneo) {
+        String uidJugador = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        List<Equipo> participantesActuales = torneo.getParticipantes();
+        if (participantesActuales == null) return;
+
+        // Buscar el equipo del usuario
+        Equipo equipoDelUsuario = null;
+        for (Equipo equipo : participantesActuales) {
+            if (equipo.getMiembros() != null) {
+                for (Jugador jugador : equipo.getMiembros()) {
+                    if (jugador.getUid().equals(uidJugador)) {
+                        equipoDelUsuario = equipo;
+                        break;
+                    }
+                }
+            }
+            if (equipoDelUsuario != null) break;
+        }
+
+        if (equipoDelUsuario != null) {
+            participantesActuales.remove(equipoDelUsuario);
+
+            db.collection("torneos").document(idDocTorneo)
+                    .update("participantes", participantesActuales)
+                    .addOnSuccessListener(aVoid -> {
+                        Snackbar.make(recyclerView, "Tu equipo ha abandonado el torneo", Snackbar.LENGTH_SHORT).show();
+                        cargarTorneos();  // Recargar la lista
+                    })
+                    .addOnFailureListener(e -> {
+                        Snackbar.make(recyclerView, "Error al abandonar el torneo: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                    });
+        } else {
+            Snackbar.make(recyclerView, "No se encontró tu equipo en el torneo", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
 }

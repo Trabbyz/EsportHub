@@ -20,9 +20,17 @@ import java.util.List;
 public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.TorneoViewHolder> {
 
     private List<Torneo> torneoList;
+    private OnAbandonarTorneoListener listener;
 
-    public AdaptadorTorneos(List<Torneo> torneoList) {
+    // Constructor con el listener
+    public AdaptadorTorneos(List<Torneo> torneoList, OnAbandonarTorneoListener listener) {
         this.torneoList = torneoList;
+        this.listener = listener;
+    }
+
+    // Interfaz para manejar el abandono de un torneo
+    public interface OnAbandonarTorneoListener {
+        void onAbandonar(Torneo torneo, String idDocTorneo);
     }
 
     @NonNull
@@ -49,10 +57,11 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
         });
 
         // Configuración para abandonar el torneo
-        holder.btnAbandonarTorneo.setOnClickListener(view -> {
-            Context context = view.getContext();
-            // Acción para abandonar el torneo
-
+        holder.btnAbandonarTorneo.setOnClickListener(v -> {
+            if (listener != null) {
+                String idDocTorneo = torneo.getIdTorneo();
+                listener.onAbandonar(torneo, idDocTorneo);
+            }
         });
     }
 
@@ -75,4 +84,5 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
         }
     }
 }
+
 

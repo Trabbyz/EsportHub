@@ -57,7 +57,7 @@ public class Pantalla_CrearTorneo extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
+        toolbar.setNavigationOnClickListener(v -> finish());
         // Mostrar DatePicker al hacer clic
         etFechaInicio.setOnClickListener(view -> mostrarDatePicker(etFechaInicio));
         etFechaFin.setOnClickListener(view -> mostrarDatePicker(etFechaFin));

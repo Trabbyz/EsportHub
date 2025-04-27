@@ -13,6 +13,9 @@
         android:theme="@style/Theme.EsportHub_APP"
         tools:targetApi="31">
         <activity
+            android:name=".vistas.partidos.Pantalla_DetallesPartido"
+            android:exported="false" />
+        <activity
             android:name=".vistas.jugador.Pantalla_PerfilJugador"
             android:exported="false" />
         <activity

@@ -49,6 +49,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
 
         // Setup de Toolbar
         toolbar = findViewById(R.id.toolbarEquiposDisponibles);
+        recyclerView = findViewById(R.id.recyclerEquiposDisponibles);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -57,8 +58,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // Inicialización del RecyclerView
-        recyclerView = findViewById(R.id.recyclerEquiposDisponibles);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Inicialización de Firestore y lista de equipos

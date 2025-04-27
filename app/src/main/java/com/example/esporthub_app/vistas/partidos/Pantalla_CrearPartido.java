@@ -15,11 +15,19 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import com.example.esporthub_app.modelos.Partido;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import com.example.esporthub_app.R;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -50,6 +58,8 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(v -> finish());
+
 
         inputEquipo1 = findViewById(R.id.inputEquipo1);
         inputEquipo2 = findViewById(R.id.inputEquipo2);
@@ -60,6 +70,16 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
 
         btnGuardarPartido = findViewById(R.id.btnGuardarPartido);
 
+
+        inputResultado.setText("0-0");
+        inputResultado.setEnabled(false);
+        inputResultado.setFocusable(false);
+        inputResultado.setClickable(false);
+
+        inputUrl.setText("https://www.twitch.tv/esporthub1");
+        inputUrl.setEnabled(false);
+        inputUrl.setFocusable(false);
+        inputUrl.setClickable(false);
         db = FirebaseFirestore.getInstance();
         nombresEquipos = new ArrayList<>();
 
@@ -136,8 +156,8 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
         String equipo1 = inputEquipo1.getText().toString().trim();
         String equipo2 = inputEquipo2.getText().toString().trim();
         String fecha = inputFecha.getText().toString().trim();
-        String resultado = inputResultado.getText().toString().trim();
-        String url = inputUrl.getText().toString().trim();
+
+
         String torneoSeleccionado = inputTorneo.getText().toString().trim();
         if (equipo1.isEmpty() || equipo2.isEmpty() || fecha.isEmpty()) {
             Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
@@ -158,14 +178,15 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
         String idPartido = db.collection("partidos").document().getId();
 
         Partido partido = new Partido();
+        partido.setIdTorneo(idTorneo);
         partido.setIdPartido(idPartido);
         partido.setEquipo1ID(equipo1);
         partido.setEquipo2ID(equipo2);
         partido.setFecha(fecha);
-        partido.setResultado(resultado);
-        partido.setUrlPartido(url);
-        partido.setIdTorneo(idTorneo);
+        partido.setResultado("0-0");
+        partido.setUrlPartido("https://www.twitch.tv/esporthub1");
 
+        //Guardar partido en la coleccion partidos
         db.collection("partidos")
                 .document(idPartido)
                 .set(partido)
@@ -176,5 +197,91 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
                 });
+
+        // Guarda el partido en la colección "partidos"
+        db.collection("partidos")
+                .document(idPartido)
+                .set(partido)
+                .addOnSuccessListener(unused -> {
+                    // Añadir el partido al equipo 1
+                    db.collection("equipos")
+                            .whereEqualTo("nombre", equipo1)
+                            .get()
+                            .addOnSuccessListener(snapshot1 -> {
+                                for (DocumentSnapshot doc : snapshot1) {
+                                    doc.getReference().update("partidos", FieldValue.arrayUnion(partido));
+                                }
+                            });
+
+                    // Añadir el partido al equipo 2
+                    db.collection("equipos")
+                            .whereEqualTo("nombre", equipo2)
+                            .get()
+                            .addOnSuccessListener(snapshot2 -> {
+                                for (DocumentSnapshot doc : snapshot2) {
+                                    doc.getReference().update("partidos", FieldValue.arrayUnion(partido));
+                                }
+                            });
+
+                    Toast.makeText(this, "Partido guardado correctamente", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show();
+                });
+
+
+        // Obtener jugadores de ambos equipos para programar la notificación
+        db.collection("equipos")
+                .whereIn("nombre", Arrays.asList(equipo1, equipo2))
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> uidMiembros = new ArrayList<>();
+
+                    for (DocumentSnapshot equipoDoc : queryDocumentSnapshots) {
+                        List<String> miembros = (List<String>) equipoDoc.get("idMiembros"); // estos son UID
+                        if (miembros != null) {
+                            uidMiembros.addAll(miembros);
+                        }
+                    }
+
+                    // Calcular la fecha de notificación (un día antes del partido)
+                    SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    Calendar cal = Calendar.getInstance();
+                    try {
+                        Date fechaPartido = formatoFecha.parse(fecha);
+                        if (fechaPartido != null) {
+                            cal.setTime(fechaPartido);
+                            cal.add(Calendar.DAY_OF_MONTH, -1); // Un día antes
+                            Date fechaNotificacion = cal.getTime();
+
+                            String fechaFormateada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(fechaNotificacion);
+
+                            // Ahora buscamos los documentos en "jugadores" por UID
+                            db.collection("jugadores")
+                                    .whereIn("uid", uidMiembros)
+                                    .get()
+                                    .addOnSuccessListener(jugadoresSnapshot -> {
+                                        for (DocumentSnapshot jugadorDoc : jugadoresSnapshot) {
+                                            String idJugador = jugadorDoc.getId(); // ID del documento en "jugadores"
+
+                                            Map<String, Object> notificacion = new HashMap<>();
+                                            notificacion.put("idJugador", idJugador);
+                                            notificacion.put("titulo", "Partido programado mañana");
+                                            notificacion.put("mensaje", "Tienes un partido entre " + equipo1 + " y " + equipo2 + " el día siguiente.");
+                                            notificacion.put("fecha", fechaFormateada);
+                                            notificacion.put("idPartido", idPartido);
+
+                                            db.collection("notificaciones").add(notificacion);
+                                        }
+                                    });
+
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+
     }
 }

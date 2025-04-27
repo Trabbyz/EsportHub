@@ -22,6 +22,14 @@ public class Partido {
         this.urlPartido = urlPartido;
     }
 
+    public Partido(String equipo1ID, String equipo2ID, String fecha, String resultado, String urlPartido) {
+        this.equipo1ID = equipo1ID;
+        this.equipo2ID = equipo2ID;
+        this.fecha = fecha;
+        this.resultado = resultado;
+        this.urlPartido = urlPartido;
+    }
+
     public String getEquipo1ID() {
         return equipo1ID;
     }

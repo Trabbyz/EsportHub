@@ -1,6 +1,8 @@
 package com.example.esporthub_app.vistas.equipos;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -16,13 +18,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorMiembroEquipo;
+import com.example.esporthub_app.modelos.Equipo;
 import com.example.esporthub_app.modelos.Jugador;
+import com.example.esporthub_app.modelos.Partido;
+import com.example.esporthub_app.vistas.partidos.Pantalla_DetallesPartido;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class Pantalla_VerDetallesEquipo extends AppCompatActivity {
     private TextView tvNombreEquipo, tvDescripcionEquipo;
@@ -30,6 +44,7 @@ public class Pantalla_VerDetallesEquipo extends AppCompatActivity {
     private FirebaseFirestore db;
     private String idEquipo;
     private Toolbar toolbarVerDetalles;
+    private MaterialButton btnVerPartidos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +59,7 @@ public class Pantalla_VerDetallesEquipo extends AppCompatActivity {
         tvDescripcionEquipo = findViewById(R.id.textViewDescripcion);
         toolbarVerDetalles = findViewById(R.id.toolbarDetallesEquipo);
         recyclerMiembros = findViewById(R.id.recyclerViewMiembros);
+        btnVerPartidos = findViewById(R.id.buttonVerPartidos);
         setSupportActionBar(toolbarVerDetalles);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,9 +80,76 @@ public class Pantalla_VerDetallesEquipo extends AppCompatActivity {
             esFavorito[0] = !esFavorito[0];
             if (esFavorito[0]) {
                 starButton.setImageResource(android.R.drawable.btn_star_big_on);
+
+                FirebaseUser usuarioActual = FirebaseAuth.getInstance().getCurrentUser();
+                if (usuarioActual != null) {
+                    String uid = usuarioActual.getUid();
+
+                    db.collection("jugadores")
+                            .whereEqualTo("uid", uid)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    DocumentSnapshot jugadorDoc = queryDocumentSnapshots.getDocuments().get(0);
+                                    String idJugador = jugadorDoc.getId();
+
+                                    // Crear notificación
+                                    Map<String, Object> notificacion = new HashMap<>();
+                                    notificacion.put("idJugador", idJugador);
+                                    notificacion.put("titulo", "Nuevo equipo favorito");
+                                    notificacion.put("mensaje", "Has marcado a " + tvNombreEquipo.getText().toString() + " como tu equipo favorito.");
+                                    notificacion.put("fecha", new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date()));
+
+                                    db.collection("notificaciones").add(notificacion)
+                                            .addOnSuccessListener(documentReference ->
+                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Notificación creada", Snackbar.LENGTH_SHORT).show())
+                                            .addOnFailureListener(e ->
+                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Error al crear notificación", Snackbar.LENGTH_SHORT).show());
+
+                                    // Añadir a favoritos del jugador
+                                    db.collection("equipos").document(idEquipo).get()
+                                            .addOnSuccessListener(documentSnapshotEquipo -> {
+                                                if (documentSnapshotEquipo.exists()) {
+                                                    String nombre = documentSnapshotEquipo.getString("nombre");
+                                                    String descripcion = documentSnapshotEquipo.getString("descripcion");
+                                                    Long puntosLong = documentSnapshotEquipo.getLong("puntos");
+                                                    int puntos = puntosLong != null ? puntosLong.intValue() : 0;
+                                                    List<Jugador> miembros = (List<Jugador>) documentSnapshotEquipo.get("miembros");
+                                                    List<Partido> partidos = (List<Partido>) documentSnapshotEquipo.get("partidos");
+                                                    List<String> idMiembros = (List<String>) documentSnapshotEquipo.get("idMiembros");
+
+
+                                                    Equipo equipoFavorito = new Equipo(idEquipo,nombre,descripcion,miembros,puntos,partidos,idMiembros);
+
+
+                                                    db.collection("jugadores").document(idJugador)
+                                                            .update("equiposFavoritos", FieldValue.arrayUnion(equipoFavorito))
+                                                            .addOnSuccessListener(aVoid ->
+                                                                    Log.d("FAVORITOS", "Equipo completo añadido a favoritos"))
+                                                            .addOnFailureListener(e ->
+                                                                    Log.e("FAVORITOS", "Error al añadir equipo completo", e));
+                                                }
+                                            });
+
+                                }
+                            });
+                }
+
             } else {
                 starButton.setImageResource(android.R.drawable.btn_star_big_off);
+                // Aquí puedes opcionalmente eliminar de favoritos si quieres
             }
+        });
+
+
+
+        btnVerPartidos.setOnClickListener(v -> {
+            String nombreEquipo = tvNombreEquipo.getText().toString();
+
+            // Aquí puedes pasar tanto el idEquipo como el nombre del equipo a la actividad de partidos
+            Intent intent = new Intent(Pantalla_VerDetallesEquipo.this, Pantalla_DetallesPartido.class);
+            intent.putExtra("nombreEquipo", nombreEquipo);  // Pasar el nombre del equipo
+            startActivity(intent);
         });
 
         cargarDatosEquipo();

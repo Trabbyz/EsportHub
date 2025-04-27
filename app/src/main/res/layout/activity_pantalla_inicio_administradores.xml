@@ -70,20 +70,22 @@
 
                 <!-- Estadísticas Rápidas -->
                 <TextView
+                    android:id="@+id/txtTorneosActivos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Torneos Activos: 5"
-                    android:textSize="18sp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center"
-                    android:layout_marginBottom="8dp"/>
+                    android:text="Torneos Activos: 5"
+                    android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/txtPartidosProgramados"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Partidos Programados: 12"
-                    android:textSize="18sp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center"
-                    android:layout_marginBottom="16dp"/>
+                    android:text="Partidos Programados: 12"
+                    android:textSize="18sp" />
 
                 <!-- Botones de Acción Rápida -->
                 <Button

@@ -16,9 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.adaptadores.AdaptadorEquiposFavoritos;
 
+import com.example.esporthub_app.modelos.Equipo;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.example.esporthub_app.R;
 
 public class Pantalla_PerfilJugador extends AppCompatActivity {
@@ -102,14 +107,23 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
                             String nombre = document.getString("nombre");
                             String equipoActual = document.getString("equipoActual");
                             String rolJuego = document.getString("rolJuego");
-                            List<String> equiposFavoritos = (List<String>) document.get("equiposFavoritos");
-                            // Extraer más datos si es necesario, por ejemplo, equiposFavoritos (si no se pasaron antes)
-                            if (equiposFavoritos != null) {
-                                AdaptadorEquiposFavoritos adapter = new AdaptadorEquiposFavoritos(equiposFavoritos);
+                            List<Map<String, Object>> equiposFavoritosRaw = (List<Map<String, Object>>) document.get("equiposFavoritos");
+
+                            if (equiposFavoritosRaw != null) {
+                                ArrayList<String> nombresEquipos = new ArrayList<>();
+
+                                for (Map<String, Object> equipo : equiposFavoritosRaw) {
+                                    String nombreEquipo = (String) equipo.get("nombre");
+                                    if (nombre != null) {
+                                        nombresEquipos.add(nombreEquipo);
+                                    }
+                                }
+
+                                AdaptadorEquiposFavoritos adapter = new AdaptadorEquiposFavoritos(nombresEquipos);
                                 recyclerEquiposFavoritos.setAdapter(adapter);
-                            } else {
-                                Toast.makeText(Pantalla_PerfilJugador.this, "No tienes equipos favoritos", Toast.LENGTH_SHORT).show();
                             }
+
+
 
                             // Actualizar la UI con los datos del jugador
                             txtNombreJugador.setText(nombre);

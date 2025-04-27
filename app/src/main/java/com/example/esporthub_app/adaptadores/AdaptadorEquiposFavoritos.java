@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.esporthub_app.modelos.Equipo;
+
 import java.util.List;
 
 public class AdaptadorEquiposFavoritos extends RecyclerView.Adapter<AdaptadorEquiposFavoritos.EquipoViewHolder> {
