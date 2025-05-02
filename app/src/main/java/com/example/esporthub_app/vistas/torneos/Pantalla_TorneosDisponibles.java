@@ -74,27 +74,65 @@ public class Pantalla_TorneosDisponibles extends AppCompatActivity {
         cargarTorneosDisponibles();
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     private void cargarTorneosDisponibles() {
-        db.collection("torneos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    listaTorneos.clear();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        Torneo torneo = doc.toObject(Torneo.class);
-                        torneo.setIdTorneo(doc.getId());
-                        if (torneo.getParticipantes().size() < torneo.getMaxParticipantes()) {
-                            listaTorneos.add(torneo);
-                        }
+        String uidJugadorActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("equipos").whereArrayContains("idMiembros", uidJugadorActual).get()
+                .addOnSuccessListener(equipoQuery -> {
+                    if (equipoQuery.isEmpty()) {
+                        Snackbar.make(findViewById(android.R.id.content), "No estás en ningún equipo", Snackbar.LENGTH_SHORT).show();
+                        return;
                     }
-                    adaptador.notifyDataSetChanged();
+
+                    DocumentSnapshot equipoDoc = equipoQuery.getDocuments().get(0);
+                    Equipo equipoActual = equipoDoc.toObject(Equipo.class);
+
+                    if (equipoActual == null) {
+                        Snackbar.make(findViewById(android.R.id.content), "Error al obtener tu equipo", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String nombreEquipoActual = equipoActual.getNombre(); // O el id si prefieres usar id
+
+                    // Ahora cargamos los torneos
+                    db.collection("torneos")
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                listaTorneos.clear();
+                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                    Torneo torneo = doc.toObject(Torneo.class);
+                                    torneo.setIdTorneo(doc.getId());
+
+                                    // Filtro: el torneo debe tener hueco
+                                    if (torneo.getParticipantes().size() < torneo.getMaxParticipantes()) {
+
+                                        // Filtro: el equipo no debe estar inscrito
+                                        boolean equipoYaInscrito = torneo.getParticipantes().stream()
+                                                .anyMatch(eq -> eq.getNombre().equals(nombreEquipoActual)); // Comparar por nombre (o id)
+
+                                        if (!equipoYaInscrito) {
+                                            listaTorneos.add(torneo);
+                                        }
+                                    }
+                                }
+                                adaptador.notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        "Error al cargar torneos: " + e.getMessage(),
+                                        Snackbar.LENGTH_SHORT).show();
+                            });
+
                 })
                 .addOnFailureListener(e -> {
                     Snackbar.make(findViewById(android.R.id.content),
-                            "Error al cargar torneos: " + e.getMessage(),
+                            "Error al buscar tu equipo: " + e.getMessage(),
                             Snackbar.LENGTH_SHORT).show();
                 });
     }
+
 
     private void unirmeAlTorneo(Torneo torneo) {
         String uidJugadorActual = FirebaseAuth.getInstance().getCurrentUser().getUid();

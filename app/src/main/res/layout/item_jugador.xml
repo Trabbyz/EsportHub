@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     android:layout_marginHorizontal="12dp"
-    android:elevation="4dp"
-    android:padding="16dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="?android:attr/selectableItemBackground">
 
-        <!-- Datos del jugador -->
+        <!-- Nombre del jugador -->
         <TextView
             android:id="@+id/txtNombreJugador"
             android:layout_width="wrap_content"
@@ -20,8 +24,9 @@
             android:text="Nombre"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"/>
+            android:textColor="@color/colorPrimary" />
 
+        <!-- Correo electrónico -->
         <TextView
             android:id="@+id/txtEmailJugador"
             android:layout_width="wrap_content"
@@ -29,6 +34,7 @@
             android:text="email@ejemplo.com"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="12dp" />
 
         <!-- Botones de acción -->
@@ -36,27 +42,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="8dp">
+            android:gravity="end">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnVerPerfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ver Perfil"
                 android:textAllCaps="false"
-                android:backgroundTint="@android:color/holo_green_dark"
-                android:layout_marginEnd="12dp" />
+                android:layout_marginEnd="12dp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/colorAccentInicio" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEliminarJugador"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Eliminar"
                 android:textAllCaps="false"
-                android:backgroundTint="@android:color/holo_red_light"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:backgroundTint="@android:color/holo_red_light" />
         </LinearLayout>
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+

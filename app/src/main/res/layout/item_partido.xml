@@ -1,8 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="12dp"
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="16dp"
     app:cardElevation="6dp">
@@ -20,19 +22,21 @@
             android:layout_height="wrap_content"
             android:text="Equipo A vs Equipo B"
             android:textColor="@color/colorPrimary"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <!-- Fecha -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
                 android:src="@drawable/ic_calendar" />
 
             <TextView
@@ -40,20 +44,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fecha del Partido"
-                android:textColor="@color/black"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />
         </LinearLayout>
 
         <!-- Resultado -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
                 android:src="@drawable/ic_score" />
 
             <TextView
@@ -61,19 +68,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Resultado"
-                android:textColor="@color/black"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <!-- Link al partido -->
+        <!-- Botón Ver Partido -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVerPartido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
             android:text="Ver Partido"
+            android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:backgroundTint="@color/colorPrimary"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+

@@ -114,20 +114,18 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="4dp" />
 
-            <EditText
-                android:id="@+id/editRolJuego"
+
+            <Spinner
+                android:id="@+id/spinnerRolJuego"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_marginBottom="24dp"
                 android:background="#b9b9b9"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:gravity="start"
                 android:padding="12dp"
-                android:text="Los Dragones"
+                android:textAlignment="viewStart"
                 android:textColor="#333333"
                 android:textSize="18sp" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEditarPerfil"

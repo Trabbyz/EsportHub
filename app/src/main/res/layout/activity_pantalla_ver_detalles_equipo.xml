@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorFondo">
 
-    <!-- Toolbar con estrella a la derecha -->
+    <!-- Toolbar fija arriba -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarDetallesEquipo"
         android:layout_width="0dp"
@@ -28,72 +28,71 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="Marcar como favorito"
             android:padding="8dp"
-            android:src="@android:drawable/btn_star_big_off"
-            />
+            android:src="@android:drawable/btn_star_big_off" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Contenido -->
-    <TextView
-        android:id="@+id/textViewNombreEquipo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Nombre del equipo"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
+    <!-- Scroll del contenido debajo del Toolbar -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/toolbarDetallesEquipo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/textViewDescripcion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Descripción del equipo..."
-        android:textColor="@android:color/darker_gray"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/textViewNombreEquipo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textViewMiembros"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Miembros del equipo:"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/textViewDescripcion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/textViewNombreEquipo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del equipo"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMiembros"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewMiembros"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/textViewDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del equipo..."
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonVerPartidos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Ver Partidos"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewMiembros"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/textViewMiembros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Miembros del equipo:"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMiembros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonVerPartidos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Ver Partidos"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-

@@ -30,6 +30,7 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
 
     // Interfaz para manejar el abandono de un torneo
     public interface OnAbandonarTorneoListener {
+        void onVerDetalles(Torneo torneo);
         void onAbandonar(Torneo torneo, String idDocTorneo);
     }
 
@@ -49,11 +50,10 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
 
         // Configuración para ver detalles del torneo
         holder.btnVerDetalles.setOnClickListener(view -> {
-            Context context = view.getContext();
-            Intent intent = new Intent(context, Pantalla_DetallesTorneo.class);
-            intent.putExtra("nombre", torneo.getNombre());
-            intent.putExtra("descripcion", torneo.getDescripcion());
-            context.startActivity(intent);
+            if (listener != null) {
+
+                listener.onVerDetalles(torneo);
+            }
         });
 
         // Configuración para abandonar el torneo

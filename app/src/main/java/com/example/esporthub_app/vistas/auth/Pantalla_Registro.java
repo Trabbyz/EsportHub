@@ -65,7 +65,7 @@ public class Pantalla_Registro extends AppCompatActivity {
         textRolJuego = findViewById(R.id.textRolJuego);
 
         // Cargar roles en el Spinner
-        String[] roles = {"Selecciona tu rol", "Jugador", "Administrador"};
+        String[] roles = {"Jugador", "Administrador"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRoles.setAdapter(adapter);

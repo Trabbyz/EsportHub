@@ -23,6 +23,7 @@ import com.example.esporthub_app.adaptadores.AdaptadorTorneos;
 import com.example.esporthub_app.modelos.Equipo;
 import com.example.esporthub_app.modelos.Jugador;
 import com.example.esporthub_app.modelos.Torneo;
+import com.example.esporthub_app.vistas.torneos.Pantalla_DetallesTorneo;
 import com.example.esporthub_app.vistas.torneos.Pantalla_TorneosDisponibles;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,6 +75,13 @@ public class Pantalla_VerMisTorneos extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         listaTorneos = new ArrayList<>();
         adapter = new AdaptadorTorneos(listaTorneos, new AdaptadorTorneos.OnAbandonarTorneoListener() {
+            @Override
+            public void onVerDetalles(Torneo torneo) {
+                Intent intent = new Intent(Pantalla_VerMisTorneos.this, Pantalla_DetallesTorneo.class);
+                intent.putExtra("idTorneo", torneo.getIdTorneo());
+                startActivity(intent);
+            }
+
             @Override
             public void onAbandonar(Torneo torneo, String idDocTorneo) {
                 abandonarTorneo(torneo, idDocTorneo);  // Lógica de abandonar torneo

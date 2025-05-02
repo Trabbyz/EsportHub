@@ -4,8 +4,10 @@ package com.example.esporthub_app.vistas.jugador;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -23,17 +25,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Pantalla_VerPerfil extends AppCompatActivity {
 
     private Toolbar toolbarPerfil;
     private Button btnEditarPerfil, btnGuardar, btnCancelar;
-    private EditText editNombre, editEmail, editRol, editRolJuego;
+    private EditText editNombre, editEmail, editRol;
+    private Spinner spinnerRolJuego;
     private FirebaseFirestore db;
     private String usuarioID;
     private FirebaseUser user;
-
+    private ArrayAdapter<String> adapterRoles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +58,30 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
         toolbarPerfil.setNavigationOnClickListener(v -> finish());
 
-        // EditTexts
+        // Inicializar vistas
         editNombre = findViewById(R.id.editNombre);
         editEmail = findViewById(R.id.editEmail);
         editRol = findViewById(R.id.editRol);
-        editRolJuego = findViewById(R.id.editRolJuego);
+        spinnerRolJuego = findViewById(R.id.spinnerRolJuego);
 
-        // Botones
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
         btnGuardar = findViewById(R.id.btnGuardar);
         btnCancelar = findViewById(R.id.btnCancelar);
 
+        // Inicializar Firebase
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // Configurar Spinner de Roles
+        adapterRoles = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Top", "Jungla", "Mid", "Adc", "Support"});
+        adapterRoles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRolJuego.setAdapter(adapterRoles);
+
+        // Cargar datos de usuario
         if (user != null) {
             String email = user.getEmail();
             Log.d("Firebase", "Correo del usuario: " + email);
@@ -83,11 +94,18 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
                             usuarioID = document.getId();
 
-                            // Cargar los datos del perfil
+                            // Cargar datos en los campos
                             editNombre.setText(document.getString("nombre"));
-                            editEmail.setText(document.getString("email")); // Si guardas el email también
+                            editEmail.setText(document.getString("email"));
                             editRol.setText(document.getString("rolUsuario"));
-                            editRolJuego.setText(document.getString("rolJuego"));
+                            String rolJuego = document.getString("rolJuego");
+
+                            if (rolJuego != null) {
+                                int position = adapterRoles.getPosition(rolJuego);
+                                if (position >= 0) {
+                                    spinnerRolJuego.setSelection(position);
+                                }
+                            }
                         } else {
                             mostrarMensaje("No se encontró el perfil del usuario.");
                         }
@@ -100,7 +118,7 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
         btnGuardar.setVisibility(View.GONE);
         btnCancelar.setVisibility(View.GONE);
 
-        // Acción al pulsar "Editar Perfil"
+        // Botón "Editar Perfil"
         btnEditarPerfil.setOnClickListener(v -> {
             setEditable(true);
             btnEditarPerfil.setVisibility(View.GONE);
@@ -108,7 +126,7 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
             btnCancelar.setVisibility(View.VISIBLE);
         });
 
-        // Acción al pulsar "Cancelar"
+        // Botón "Cancelar"
         btnCancelar.setOnClickListener(v -> {
             setEditable(false);
             btnEditarPerfil.setVisibility(View.VISIBLE);
@@ -116,7 +134,7 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
             btnCancelar.setVisibility(View.GONE);
         });
 
-        // Acción al pulsar "Guardar Cambios"
+        // Botón "Guardar Cambios"
         btnGuardar.setOnClickListener(v -> {
             actualizarPerfil();
             setEditable(false);
@@ -129,8 +147,8 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
     private void actualizarPerfil() {
         String nuevoNombre = editNombre.getText().toString().trim();
         String nuevoEmail = editEmail.getText().toString().trim();
-        String nuevoRol = editRol.getText().toString().trim();
-        String nuevoRolJuego = editRolJuego.getText().toString().trim();
+        String nuevoRol = editRol.getText().toString().trim(); // no editable
+        String nuevoRolJuego = spinnerRolJuego.getSelectedItem().toString().trim();
 
         if (nuevoNombre.isEmpty() || nuevoEmail.isEmpty() || nuevoRol.isEmpty() || nuevoRolJuego.isEmpty()) {
             mostrarMensaje("Por favor, completa todos los campos.");
@@ -147,28 +165,92 @@ public class Pantalla_VerPerfil extends AppCompatActivity {
                 .update(datosActualizados)
                 .addOnSuccessListener(aVoid -> {
                     mostrarMensaje("Perfil actualizado correctamente.");
-                    setEditable(false);
-                    btnEditarPerfil.setVisibility(View.VISIBLE);
-                    btnGuardar.setVisibility(View.GONE);
-                    btnCancelar.setVisibility(View.GONE);
+                    actualizarEnColeccionJugadores(nuevoNombre, nuevoEmail, nuevoRolJuego);
+                    actualizarEnEquipo(nuevoNombre, nuevoEmail, nuevoRolJuego);
                 })
                 .addOnFailureListener(e -> mostrarMensaje("Error al actualizar perfil: " + e.getMessage()));
     }
+
+    private void actualizarEnColeccionJugadores(String nombre, String email, String rolJuego) {
+        db.collection("jugadores")
+                .whereEqualTo("idUsuario", usuarioID)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        doc.getReference().update("nombre", nombre,
+                                "email", email,
+                                "rolJuego", rolJuego);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firebase", "Error actualizando en jugadores: " + e.getMessage()));
+    }
+
+    private void actualizarEnEquipo(String nombre, String email, String rolJuego) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Log.e("Firebase", "Usuario no autenticado");
+            return;
+        }
+
+        String currentUID = currentUser.getUid();
+
+        db.collection("equipos")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (DocumentSnapshot equipo : querySnapshot.getDocuments()) {
+                        List<Map<String, Object>> miembrosData = (List<Map<String, Object>>) equipo.get("miembros");
+
+                        if (miembrosData != null) {
+                            boolean actualizado = false;
+
+                            for (Map<String, Object> jugador : miembrosData) {
+                                if (jugador.containsKey("uid") &&
+                                        currentUID.equals(jugador.get("uid"))) {
+                                    jugador.put("nombre", nombre);
+                                    jugador.put("rolJuego", rolJuego);
+                                    actualizado = true;
+                                    break; // solo uno debe coincidir
+                                }
+                            }
+
+                            if (actualizado) {
+                                equipo.getReference()
+                                        .update("miembros", miembrosData)
+                                        .addOnSuccessListener(aVoid -> Log.d("Firebase", "Jugador actualizado en el equipo"))
+                                        .addOnFailureListener(e -> Log.e("Firebase", "Error al actualizar miembro: " + e.getMessage()));
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firebase", "Error obteniendo equipos: " + e.getMessage()));
+    }
+
+
 
 
     private void mostrarMensaje(String mensaje) {
         Snackbar.make(findViewById(android.R.id.content), mensaje, Snackbar.LENGTH_SHORT).show();
     }
 
-
-    // Método para activar o desactivar edición
+    // Activar/desactivar edición
     private void setEditable(boolean editable) {
-        EditText[] campos = {editNombre, editEmail, editRol, editRolJuego};
-        for (EditText campo : campos) {
-            campo.setFocusable(editable);
-            campo.setFocusableInTouchMode(editable);
-            campo.setClickable(editable);
-            campo.setCursorVisible(editable);
-        }
+        editNombre.setFocusable(editable);
+        editNombre.setFocusableInTouchMode(editable);
+        editNombre.setClickable(editable);
+        editNombre.setCursorVisible(editable);
+
+        editEmail.setFocusable(editable);
+        editEmail.setFocusableInTouchMode(editable);
+        editEmail.setClickable(editable);
+        editEmail.setCursorVisible(editable);
+
+        // El rolUsuario NO se puede editar nunca
+        editRol.setFocusable(false);
+        editRol.setFocusableInTouchMode(false);
+        editRol.setClickable(false);
+
+        // El spinner de rolJuego sólo se activa/desactiva
+        spinnerRolJuego.setEnabled(editable);
     }
 }
+
