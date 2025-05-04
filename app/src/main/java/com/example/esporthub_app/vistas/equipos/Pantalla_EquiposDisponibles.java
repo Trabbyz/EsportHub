@@ -103,16 +103,10 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
                         DocumentSnapshot jugadorDoc = querySnapshot.getDocuments().get(0);
                         Jugador jugador = jugadorDoc.toObject(Jugador.class);
 
-                        if (jugador.getEquipoActual() != null && !jugador.getEquipoActual().isEmpty()) {
-                            Snackbar.make(findViewById(android.R.id.content), "Ya perteneces a un equipo", Snackbar.LENGTH_SHORT).show();
-                            return;
-                        }
                         if (jugador == null) {
                             Snackbar.make(findViewById(android.R.id.content), "No se encontraron datos del jugador", Snackbar.LENGTH_SHORT).show();
                             return;
                         }
-
-                        String equipoActual = jugador.getEquipoActual(); // nombre del equipo actual
 
                         // Obtener equipos desde Firestore
                         db.collection("equipos").get()
@@ -124,11 +118,10 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
                                         Equipo equipo = doc.toObject(Equipo.class);
                                         String idDoc = doc.getId();
 
-                                        boolean esMiEquipo = equipo.getNombre().equals(equipoActual);
                                         boolean equipoDisponible = equipo.getMiembros() != null &&
                                                 equipo.getMiembros().size() < equipo.getMaxJugadores();
 
-                                        if (!esMiEquipo && equipoDisponible) {
+                                        if (equipoDisponible) {
                                             listaEquipos.add(equipo);
                                             listaIdsDocumentos.add(idDoc);
                                         }
@@ -138,11 +131,8 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
                                     adapter = new AdaptadorEquiposDisponibles(listaEquipos, listaIdsDocumentos, this, new AdaptadorEquiposDisponibles.OnEquipoClickListener() {
                                         @Override
                                         public void onVerDetalles(Equipo equipo) {
-                                            // Aquí usamos el índice de equipo para obtener el idDoc correspondiente
                                             int position = listaEquipos.indexOf(equipo);
-                                            String idDocEquipo = listaIdsDocumentos.get(position); // Obtener el ID correcto
-
-                                            // Pasar el ID del equipo al Intent
+                                            String idDocEquipo = listaIdsDocumentos.get(position);
                                             Intent intent = new Intent(Pantalla_EquiposDisponibles.this, Pantalla_VerDetallesEquipo.class);
                                             intent.putExtra("idEquipo", idDocEquipo);
                                             startActivity(intent);
@@ -169,6 +159,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
                     Snackbar.make(findViewById(android.R.id.content), "Error al obtener datos del jugador", Snackbar.LENGTH_SHORT).show();
                 });
     }
+
 
 
 

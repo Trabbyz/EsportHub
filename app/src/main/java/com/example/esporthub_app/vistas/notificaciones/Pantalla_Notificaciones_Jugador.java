@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -18,13 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorNotificaciones;
 import com.example.esporthub_app.modelos.Notificacion;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class Pantalla_Notificaciones_Jugador extends AppCompatActivity {
     private AdaptadorNotificaciones adapter;
     private List<Notificacion> listaNotificaciones;
     private FirebaseFirestore db;
-    private NavigationView limpiarNotificaciones;
+    private TextView textSinNotificaciones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,35 @@ public class Pantalla_Notificaciones_Jugador extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        adapter = new AdaptadorNotificaciones(listaNotificaciones);
+        textSinNotificaciones = findViewById(R.id.textSinNotificaciones);
+
+        cargarNotificaciones();
+        if (listaNotificaciones.isEmpty()) {
+            textSinNotificaciones.setVisibility(View.VISIBLE);
+        } else {
+            textSinNotificaciones.setVisibility(View.GONE);
+        }
+
+
+        adapter = new AdaptadorNotificaciones(listaNotificaciones, new AdaptadorNotificaciones.OnNotificacionClickListener() {
+            @Override
+            public void onEliminarNotificacion(Notificacion notificacion) {
+                db.collection("notificaciones").document(notificacion.getIdNotificacion())
+                        .delete()
+                        .addOnSuccessListener(unused -> {
+                            int index = listaNotificaciones.indexOf(notificacion);
+                            if (index != -1) {
+                                listaNotificaciones.remove(index);
+                                adapter.notifyItemRemoved(index);
+                                adapter.notifyItemRangeChanged(index, listaNotificaciones.size());
+                            }
+                        });
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        cargarNotificaciones();
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -104,9 +131,21 @@ public class Pantalla_Notificaciones_Jugador extends AppCompatActivity {
                                             Notificacion noti = new Notificacion(idNotificacion, idJugador, titulo, mensaje, fecha);
                                             listaNotificaciones.add(noti);
                                         }
+
+                                        // Ordenar por fecha (más reciente primero)
+                                        listaNotificaciones.sort((n1, n2) -> n2.getFecha().compareTo(n1.getFecha()));
                                         adapter.notifyDataSetChanged();
+
+                                        // Mostrar u ocultar mensaje vacío
+                                        if (listaNotificaciones.isEmpty()) {
+                                            textSinNotificaciones.setVisibility(View.VISIBLE);
+                                        } else {
+                                            textSinNotificaciones.setVisibility(View.GONE);
+                                        }
                                     }
+
                                 });
+
                     } else {
                         Snackbar.make(findViewById(R.id.pantallaNotificaciones), "Jugador no encontrado", Snackbar.LENGTH_LONG).show();
                     }
@@ -128,12 +167,48 @@ public class Pantalla_Notificaciones_Jugador extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_clear_notifications) {
-            listaNotificaciones.clear();
-            adapter.notifyDataSetChanged();
+
+            FirebaseUser usuarioActual = FirebaseAuth.getInstance().getCurrentUser();
+            if (usuarioActual == null) {
+                Snackbar.make(findViewById(R.id.pantallaNotificaciones), "Usuario no autenticado", Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+
+            String uid = usuarioActual.getUid();
+
+            db.collection("jugadores")
+                    .whereEqualTo("uid", uid)
+                    .get()
+                    .addOnSuccessListener(jugadorSnapshot -> {
+                        if (!jugadorSnapshot.isEmpty()) {
+                            String idJugador = jugadorSnapshot.getDocuments().get(0).getId();
+
+                            db.collection("notificaciones")
+                                    .whereEqualTo("idJugador", idJugador)
+                                    .get()
+                                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                                        WriteBatch batch = db.batch();
+                                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                            batch.delete(doc.getReference());
+                                        }
+
+                                        batch.commit().addOnSuccessListener(unused -> {
+                                            listaNotificaciones.clear();
+                                            adapter.notifyDataSetChanged();
+                                            Snackbar.make(findViewById(R.id.pantallaNotificaciones), "Notificaciones eliminadas", Snackbar.LENGTH_SHORT).show();
+                                        });
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Snackbar.make(findViewById(R.id.pantallaNotificaciones), "Error al eliminar notificaciones", Snackbar.LENGTH_LONG).show()
+                    );
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 

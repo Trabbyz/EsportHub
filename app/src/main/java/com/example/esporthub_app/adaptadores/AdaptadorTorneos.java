@@ -51,7 +51,6 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
         // Configuración para ver detalles del torneo
         holder.btnVerDetalles.setOnClickListener(view -> {
             if (listener != null) {
-
                 listener.onVerDetalles(torneo);
             }
         });

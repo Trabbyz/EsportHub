@@ -115,14 +115,10 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                         equipo.setId(doc.getId());
                         listaIdsDocumentos.add(doc.getId());
 
-                        if (equipo.getMiembros() != null) {
-                            for (Jugador j : equipo.getMiembros()) {
-                                if (j.getUid().equals(uidJugador)) {
-                                    listaEquipos.add(equipo);
-                                    break;
-                                }
-                            }
+                        if (equipo.getIdMiembros() != null && equipo.getIdMiembros().contains(uidJugador)) {
+                            listaEquipos.add(equipo);
                         }
+
                     }
 
                     // Si no hay equipos, muestra el layout adecuado

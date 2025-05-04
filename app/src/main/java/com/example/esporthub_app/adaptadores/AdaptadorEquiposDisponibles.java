@@ -24,12 +24,12 @@ public class AdaptadorEquiposDisponibles extends RecyclerView.Adapter<AdaptadorE
 
     public interface OnEquipoClickListener {
         void onVerDetalles(Equipo equipo);
-        void onUnirme(Equipo equipo, String idDocEquipo);  // Pasar el idDocEquipo aquí
+        void onUnirme(Equipo equipo, String idDocEquipo);
     }
 
     public AdaptadorEquiposDisponibles(List<Equipo> listaEquipos, List<String> listaIdsDocumentos, Context context, OnEquipoClickListener listener) {
         this.listaEquipos = listaEquipos;
-        this.listaIdsDocumentos = listaIdsDocumentos;  // Inicializar la lista de IDs de documentos
+        this.listaIdsDocumentos = listaIdsDocumentos;
         this.context = context;
         this.listener = listener;
     }
@@ -52,7 +52,7 @@ public class AdaptadorEquiposDisponibles extends RecyclerView.Adapter<AdaptadorE
         String idDocEquipo = listaIdsDocumentos.get(position);
 
         holder.btnVerDetalles.setOnClickListener(v -> listener.onVerDetalles(equipo));
-        holder.btnUnirme.setOnClickListener(v -> listener.onUnirme(equipo, idDocEquipo));  // Pasar el idDocEquipo
+        holder.btnUnirme.setOnClickListener(v -> listener.onUnirme(equipo, idDocEquipo));
     }
 
     @Override

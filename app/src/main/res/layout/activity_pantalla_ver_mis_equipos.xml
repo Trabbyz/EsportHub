@@ -51,13 +51,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Crear equipo"
+            android:backgroundTint="@color/colorPrimary"
             android:layout_marginBottom="12dp" />
 
         <Button
             android:id="@+id/btnBuscarEquipos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buscar equipos" />
+            android:text="Buscar equipos"
+            android:backgroundTint="@color/colorPrimary"/>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -50,7 +50,8 @@
             android:id="@+id/btnBuscarTorneos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buscar torneos" />
+            android:text="Buscar torneos"
+            android:backgroundTint="@color/colorPrimary"/>
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

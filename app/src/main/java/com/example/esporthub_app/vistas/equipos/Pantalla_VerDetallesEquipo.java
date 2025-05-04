@@ -102,9 +102,9 @@ public class Pantalla_VerDetallesEquipo extends AppCompatActivity {
 
                                     db.collection("notificaciones").add(notificacion)
                                             .addOnSuccessListener(documentReference ->
-                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Notificación creada", Snackbar.LENGTH_SHORT).show())
+                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Equipo añadido a favoritos", Snackbar.LENGTH_SHORT).show())
                                             .addOnFailureListener(e ->
-                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Error al crear notificación", Snackbar.LENGTH_SHORT).show());
+                                                    Snackbar.make(findViewById(R.id.pantallaVerDetallesEquipo), "Error al añadir a favoritos", Snackbar.LENGTH_SHORT).show());
 
                                     // Añadir a favoritos del jugador
                                     db.collection("equipos").document(idEquipo).get()

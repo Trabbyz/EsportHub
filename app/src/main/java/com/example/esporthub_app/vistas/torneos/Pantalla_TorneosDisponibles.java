@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -24,7 +25,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Pantalla_TorneosDisponibles extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -144,67 +147,111 @@ public class Pantalla_TorneosDisponibles extends AppCompatActivity {
                         return;
                     }
 
-                    DocumentSnapshot equipoDoc = equipoQuery.getDocuments().get(0);
-                    Equipo equipo = equipoDoc.toObject(Equipo.class);
+                    List<Equipo> equiposJugador = new ArrayList<>();
+                    for (DocumentSnapshot doc : equipoQuery.getDocuments()) {
+                        Equipo equipo = doc.toObject(Equipo.class);
+                        if (equipo != null) {
+                            equiposJugador.add(equipo);
+                        }
+                    }
 
-                    if (equipo == null) {
-                        Snackbar.make(findViewById(android.R.id.content), "Error al obtener tu equipo", Snackbar.LENGTH_SHORT).show();
+                    if (equiposJugador.size() == 1) {
+                        // Solo tiene un equipo → continuar
+                        intentarUnirseAlTorneo(torneo, equiposJugador.get(0), uidJugadorActual);
+                    } else {
+                        // Tiene varios equipos → mostrar diálogo para elegir
+                        String[] nombresEquipos = new String[equiposJugador.size()];
+                        for (int i = 0; i < equiposJugador.size(); i++) {
+                            nombresEquipos[i] = equiposJugador.get(i).getNombre();
+                        }
+
+                        new AlertDialog.Builder(this)
+                                .setTitle("Selecciona un equipo")
+                                .setItems(nombresEquipos, (dialog, which) -> {
+                                    Equipo equipoSeleccionado = equiposJugador.get(which);
+                                    intentarUnirseAlTorneo(torneo, equipoSeleccionado, uidJugadorActual);
+                                })
+                                .setCancelable(true)
+                                .show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error al buscar tus equipos", e);
+                    Snackbar.make(findViewById(android.R.id.content), "Error al buscar tus equipos", Snackbar.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void intentarUnirseAlTorneo(Torneo torneo, Equipo equipo, String uidJugadorActual) {
+        if (equipo.getIdMiembros().size() != 5) {
+            Snackbar.make(findViewById(android.R.id.content), "Tu equipo debe tener exactamente 5 jugadores", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        db.collection("torneos").document(torneo.getIdTorneo()).get()
+                .addOnSuccessListener(torneoSnapshot -> {
+                    Torneo torneoActualizado = torneoSnapshot.toObject(Torneo.class);
+
+                    if (torneoActualizado == null) {
+                        Snackbar.make(findViewById(android.R.id.content), "Error al obtener el torneo", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (equipo.getIdMiembros().size() != 5) {
-                        Snackbar.make(findViewById(android.R.id.content), "Tu equipo debe tener exactamente 5 jugadores", Snackbar.LENGTH_SHORT).show();
+                    List<Equipo> participantes = torneoActualizado.getParticipantes() != null ?
+                            torneoActualizado.getParticipantes() : new ArrayList<>();
+
+                    // Verificar si el equipo ya está inscrito
+                    boolean equipoYaInscrito = participantes.stream()
+                            .anyMatch(eq -> eq.getNombre().equals(equipo.getNombre()));
+
+                    if (equipoYaInscrito) {
+                        Snackbar.make(findViewById(android.R.id.content), "Ese equipo ya está inscrito en el torneo", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
-                    db.collection("torneos").document(torneo.getIdTorneo()).get()
-                            .addOnSuccessListener(torneoSnapshot -> {
-                                Torneo torneoActualizado = torneoSnapshot.toObject(Torneo.class);
+                    // Verificar si algún jugador del equipo ya está participando con otro equipo
+                    Set<String> idsJugadoresEquipoSeleccionado = new HashSet<>(equipo.getIdMiembros());
 
-                                if (torneoActualizado == null) {
-                                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener el torneo", Snackbar.LENGTH_SHORT).show();
+                    for (Equipo equipoInscrito : participantes) {
+                        List<String> miembros = equipoInscrito.getIdMiembros();
+                        if (miembros != null) {
+                            for (String idMiembro : miembros) {
+                                if (idsJugadoresEquipoSeleccionado.contains(idMiembro)) {
+                                    Snackbar.make(findViewById(android.R.id.content),
+                                            "Uno o más jugadores ya están participando en el torneo con otro equipo", Snackbar.LENGTH_SHORT).show();
                                     return;
                                 }
+                            }
+                        }
+                    }
 
-                                List<Equipo> participantes = torneoActualizado.getParticipantes() != null ?
-                                        torneoActualizado.getParticipantes() : new ArrayList<>();
+                    if (participantes.size() >= torneoActualizado.getMaxParticipantes()) {
+                        Snackbar.make(findViewById(android.R.id.content), "El torneo ya está lleno", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                                boolean yaInscrito = participantes.stream()
-                                        .anyMatch(eq -> eq.getNombre().equals(equipo.getNombre())); // o comparar por ID si tenés uno
+                    participantes.add(equipo);
 
-                                if (yaInscrito) {
-                                    Snackbar.make(findViewById(android.R.id.content), "Tu equipo ya está inscrito en este torneo", Snackbar.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                if (participantes.size() >= torneoActualizado.getMaxParticipantes()) {
-                                    Snackbar.make(findViewById(android.R.id.content), "El torneo ya está lleno", Snackbar.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                participantes.add(equipo);
-
-                                db.collection("torneos").document(torneo.getIdTorneo())
-                                        .update("participantes", participantes)
-                                        .addOnSuccessListener(aVoid -> {
-                                            Snackbar.make(findViewById(android.R.id.content), "Tu equipo se ha inscrito correctamente", Snackbar.LENGTH_SHORT).show();
-                                            cargarTorneosDisponibles();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e("Firestore", "Error al inscribirse al torneo", e);
-                                            Snackbar.make(findViewById(android.R.id.content), "Error al inscribirse al torneo", Snackbar.LENGTH_SHORT).show();
-                                        });
+                    db.collection("torneos").document(torneo.getIdTorneo())
+                            .update("participantes", participantes)
+                            .addOnSuccessListener(aVoid -> {
+                                Snackbar.make(findViewById(android.R.id.content), "Tu equipo se ha inscrito correctamente", Snackbar.LENGTH_SHORT).show();
+                                cargarTorneosDisponibles();
                             })
                             .addOnFailureListener(e -> {
-                                Log.e("Firestore", "Error al obtener el torneo actualizado", e);
-                                Snackbar.make(findViewById(android.R.id.content), "Error al obtener el torneo", Snackbar.LENGTH_SHORT).show();
+                                Log.e("Firestore", "Error al inscribirse al torneo", e);
+                                Snackbar.make(findViewById(android.R.id.content), "Error al inscribirse al torneo", Snackbar.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error al buscar tu equipo", e);
-                    Snackbar.make(findViewById(android.R.id.content), "Error al buscar tu equipo", Snackbar.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error al obtener el torneo", e);
+                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener el torneo", Snackbar.LENGTH_SHORT).show();
                 });
     }
+
+
+
+
 
 
 
