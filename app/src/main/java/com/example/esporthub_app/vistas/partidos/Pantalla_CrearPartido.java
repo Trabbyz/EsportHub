@@ -174,52 +174,71 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
             return;
         }
 
-        // Validar si ambos equipos pertenecen al torneo y no comparten jugadores
+        // Obtener los equipos seleccionados
         db.collection("equipos")
                 .whereIn("nombre", Arrays.asList(equipo1, equipo2))
                 .get()
-                .addOnSuccessListener(snapshot -> {
-                    int equiposEnTorneo = 0;
-                    List<List<String>> miembrosEquipos = new ArrayList<>();
-
-                    for (DocumentSnapshot doc : snapshot) {
-                        String torneoEquipo = doc.getString("idTorneo");
-                        if (idTorneo.equals(torneoEquipo)) {
-                            equiposEnTorneo++;
-
-                            List<String> miembros = (List<String>) doc.get("idMiembros");
-                            if (miembros != null) {
-                                miembrosEquipos.add(miembros);
-                            } else {
-                                miembrosEquipos.add(new ArrayList<>());
-                            }
-                        }
-                    }
-
-                    if (equiposEnTorneo < 2) {
-                        Toast.makeText(this, "Ambos equipos deben pertenecer al torneo seleccionado", Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(equiposSnapshot -> {
+                    if (equiposSnapshot.size() < 2) {
+                        Toast.makeText(this, "No se encontraron ambos equipos", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    // Verificar si hay jugadores en común
-                    Set<String> miembrosEquipo1 = new HashSet<>(miembrosEquipos.get(0));
-                    Set<String> miembrosEquipo2 = new HashSet<>(miembrosEquipos.get(1));
-
-                    miembrosEquipo1.retainAll(miembrosEquipo2); // intersección
-
-                    if (!miembrosEquipo1.isEmpty()) {
-                        Toast.makeText(this, "No se puede crear el partido: hay jugadores que pertenecen a ambos equipos", Toast.LENGTH_LONG).show();
-                        return;
+                    List<DocumentSnapshot> documentosEquipos = equiposSnapshot.getDocuments();
+                    Map<String, List<String>> miembrosPorEquipo = new HashMap<>();
+                    for (DocumentSnapshot doc : documentosEquipos) {
+                        String nombre = doc.getString("nombre");
+                        List<String> miembros = (List<String>) doc.get("idMiembros");
+                        miembrosPorEquipo.put(nombre, miembros != null ? miembros : new ArrayList<>());
                     }
 
-                    // Se puede Crear el partido
-                    crearPartido(equipo1, equipo2, fecha, idTorneo);
+                    // Obtener el torneo y verificar que los equipos estén en la lista de participantes
+                    db.collection("torneos").document(idTorneo).get()
+                            .addOnSuccessListener(torneoDoc -> {
+                                if (!torneoDoc.exists()) {
+                                    Toast.makeText(this, "Torneo no encontrado", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
+                                List<Map<String, Object>> participantes = (List<Map<String, Object>>) torneoDoc.get("participantes");
+                                if (participantes == null) participantes = new ArrayList<>();
+
+                                Set<String> nombresParticipantes = new HashSet<>();
+                                for (Map<String, Object> equipo : participantes) {
+                                    Object nombreObj = equipo.get("nombre");
+                                    if (nombreObj != null) {
+                                        nombresParticipantes.add(nombreObj.toString());
+                                    }
+                                }
+
+                                if (!nombresParticipantes.contains(equipo1) || !nombresParticipantes.contains(equipo2)) {
+                                    Toast.makeText(this, "Ambos equipos deben pertenecer al torneo seleccionado", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Verificar si hay jugadores en común
+                                Set<String> miembrosEquipo1 = new HashSet<>(miembrosPorEquipo.get(equipo1));
+                                Set<String> miembrosEquipo2 = new HashSet<>(miembrosPorEquipo.get(equipo2));
+
+                                miembrosEquipo1.retainAll(miembrosEquipo2); // intersección
+
+                                if (!miembrosEquipo1.isEmpty()) {
+                                    Toast.makeText(this, "No se puede crear el partido: hay jugadores que pertenecen a ambos equipos", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+
+                                // Se puede crear el partido
+                                crearPartido(equipo1, equipo2, fecha, idTorneo);
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Error al obtener el torneo", Toast.LENGTH_SHORT).show();
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al validar los equipos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al obtener equipos", Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 
     private void crearPartido(String equipo1, String equipo2, String fecha, String idTorneo) {
