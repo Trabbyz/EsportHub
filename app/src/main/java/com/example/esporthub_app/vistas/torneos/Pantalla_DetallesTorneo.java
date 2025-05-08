@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +35,7 @@ public class Pantalla_DetallesTorneo extends AppCompatActivity {
     private AdaptadorParticipantesTorneo adaptadorParticipantes;
     private FirebaseFirestore db;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +65,8 @@ public class Pantalla_DetallesTorneo extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // Inicializar Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Obtener ID del torneo desde el intent
         String torneoId = getIntent().getStringExtra("idTorneo");
         if (torneoId != null) {
             cargarDatosTorneo(torneoId);
@@ -80,11 +79,11 @@ public class Pantalla_DetallesTorneo extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         mostrarDatos(documentSnapshot);
                     } else {
-                        Toast.makeText(this, "Torneo no encontrado", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Torneo no encontrado", Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al cargar el torneo", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error al cargar el torneo", Snackbar.LENGTH_SHORT).show();
                 });
     }
 
@@ -100,13 +99,10 @@ public class Pantalla_DetallesTorneo extends AppCompatActivity {
         List<String> participantes = (List<String>) doc.get("participantes");
         if (participantes != null) {
             recyclerParticipantes.setLayoutManager(new LinearLayoutManager(this));
-
-// Suponiendo que recibiste el objeto Torneo con la lista completa
             adaptadorParticipantes = new AdaptadorParticipantesTorneo(torneo.getParticipantes(), this);
             recyclerParticipantes.setAdapter(adaptadorParticipantes);
         }
 
-        // Ejemplo de comportamiento para botón
         btnInscribirse.setOnClickListener(v -> {
             unirmeAlTorneo(torneo);
         });
@@ -148,7 +144,7 @@ public class Pantalla_DetallesTorneo extends AppCompatActivity {
                                         torneoActualizado.getParticipantes() : new ArrayList<>();
 
                                 boolean yaInscrito = participantes.stream()
-                                        .anyMatch(eq -> eq.getNombre().equals(equipo.getNombre())); // o comparar por ID si tenés uno
+                                        .anyMatch(eq -> eq.getNombre().equals(equipo.getNombre()));
 
                                 if (yaInscrito) {
                                     Snackbar.make(findViewById(android.R.id.content), "Tu equipo ya está inscrito en este torneo", Snackbar.LENGTH_SHORT).show();

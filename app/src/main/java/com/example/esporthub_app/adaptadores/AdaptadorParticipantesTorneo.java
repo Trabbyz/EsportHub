@@ -38,7 +38,7 @@ public class AdaptadorParticipantesTorneo extends RecyclerView.Adapter<Adaptador
         holder.nombreEquipo.setText(equipo.getNombre());
         holder.cantidadJugadores.setText("Jugadores: " + equipo.getIdMiembros().size());
 
-        // Si querés mostrar también los nombres de los miembros:
+
         if (equipo.getMiembros() != null && !equipo.getMiembros().isEmpty()) {
             StringBuilder miembros = new StringBuilder();
             for (Jugador jugador : equipo.getMiembros()) {

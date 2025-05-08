@@ -15,9 +15,8 @@ import com.example.esporthub_app.modelos.Jugador;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJugadoresSeleccion.ViewHolder> {
 
@@ -55,7 +54,7 @@ public class AdaptadorJugadoresSeleccion extends RecyclerView.Adapter<AdaptadorJ
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(jugadoresSeleccionados.contains(jugador));
 
-        // Checkbox listener
+
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (jugadoresSeleccionados.size() < maxSeleccion) {

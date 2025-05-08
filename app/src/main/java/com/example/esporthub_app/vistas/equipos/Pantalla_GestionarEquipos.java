@@ -2,10 +2,10 @@ package com.example.esporthub_app.vistas.equipos;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.InputType;
+
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -23,6 +23,7 @@ import com.example.esporthub_app.modelos.Equipo;
 import com.example.esporthub_app.modelos.Jugador;
 import com.example.esporthub_app.modelos.Partido;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,6 +39,7 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
     private List<Equipo> listaEquipos = new ArrayList<>();
     private AdaptadorEquiposAdmin adaptadorEquipos;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +73,6 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
         cargarEquipos();
     }
 
-
-
     @SuppressLint("NotifyDataSetChanged")
     private void cargarEquipos() {
         db.collection("equipos").get().addOnSuccessListener(snapshot -> {
@@ -90,7 +90,6 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(equipoExistente == null ? "Agregar Equipo" : "Editar Equipo");
 
-        // Contenedor con dos campos: nombre y descripción
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 40, 50, 10);
@@ -118,14 +117,14 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
             List<String> idMiembros = new ArrayList<>();
             if (!nombre.isEmpty() && !descripcion.isEmpty()) {
                 if (equipoExistente == null) {
-                    agregarEquipo(new Equipo(nombre, descripcion,miembros,5,partidos,idMiembros));
+                    agregarEquipo(new Equipo(nombre, descripcion, miembros, 5, partidos, idMiembros));
                 } else {
                     equipoExistente.setNombre(nombre);
                     equipoExistente.setDescripcion(descripcion);
                     actualizarEquipo(equipoExistente);
                 }
             } else {
-                Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Todos los campos son obligatorios", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -133,27 +132,23 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
         builder.show();
     }
 
-
     private void agregarEquipo(Equipo equipo) {
         db.collection("equipos").add(equipo).addOnSuccessListener(ref -> {
-            // Aquí ya tienes el ID generado por Firestore
             String idGenerado = ref.getId();
             equipo.setId(idGenerado);
 
-            // Ahora actualizas el documento para incluir el ID dentro del objeto
             db.collection("equipos").document(idGenerado).set(equipo)
                     .addOnSuccessListener(unused -> {
                         cargarEquipos();
-                        Toast.makeText(this, "Equipo agregado", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Equipo agregado", Snackbar.LENGTH_SHORT).show();
                     });
         });
     }
 
-
     private void actualizarEquipo(Equipo equipo) {
         db.collection("equipos").document(equipo.getId()).set(equipo).addOnSuccessListener(unused -> {
             cargarEquipos();
-            Toast.makeText(this, "Equipo actualizado", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Equipo actualizado", Snackbar.LENGTH_SHORT).show();
         });
     }
 
@@ -171,11 +166,10 @@ public class Pantalla_GestionarEquipos extends AppCompatActivity {
                             .addOnSuccessListener(unused -> {
                                 listaEquipos.remove(equipo);
                                 adaptadorEquipos.notifyDataSetChanged();
-                                Toast.makeText(this, "Equipo eliminado", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(android.R.id.content), "Equipo eliminado", Snackbar.LENGTH_SHORT).show();
                             });
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
-
 }

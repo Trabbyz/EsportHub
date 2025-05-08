@@ -10,13 +10,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.adaptadores.AdaptadorEquiposFavoritos;
 
-import com.example.esporthub_app.modelos.Equipo;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -33,6 +34,7 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
 
     private String emailJugador;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,6 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
 
         // Inicializar Firebase
         db = FirebaseFirestore.getInstance();
-
 
         // Obtener referencias de las vistas
         txtNombreJugador = findViewById(R.id.txtNombreJugador);
@@ -63,12 +64,11 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
-
         emailJugador = getIntent().getStringExtra("email");
-        // Configurar RecyclerView
+
         recyclerEquiposFavoritos.setLayoutManager(new LinearLayoutManager(this));
 
-        // Cargar los datos del jugador desde Firestore
+
         cargarPerfilJugador(emailJugador);
     }
 
@@ -87,15 +87,15 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
                             cargarDatosJugador(idUsuario);
                         }
                     } else {
-                        Toast.makeText(Pantalla_PerfilJugador.this, "No se encontró el jugador", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "No se encontró el jugador", Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(Pantalla_PerfilJugador.this, "Error al cargar el perfil", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error al cargar el perfil", Snackbar.LENGTH_SHORT).show();
                 });
     }
 
-    // Método para cargar los datos del jugador desde la colección "jugadores"
+
     private void cargarDatosJugador(String idUsuario) {
         // Buscar en la colección "jugadores" usando el campo idUsuario
         db.collection("jugadores")
@@ -123,8 +123,6 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
                                 recyclerEquiposFavoritos.setAdapter(adapter);
                             }
 
-
-
                             // Actualizar la UI con los datos del jugador
                             txtNombreJugador.setText(nombre);
                             txtEquipoActual.setText(equipoActual);
@@ -132,12 +130,11 @@ public class Pantalla_PerfilJugador extends AppCompatActivity {
 
                         }
                     } else {
-                        Toast.makeText(Pantalla_PerfilJugador.this, "No se encontró el jugador en la colección 'jugadores'", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "No se encontró el jugador en la colección 'jugadores'", Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(Pantalla_PerfilJugador.this, "Error al cargar los datos del jugador", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error al cargar los datos del jugador", Snackbar.LENGTH_SHORT).show();
                 });
     }
-
 }

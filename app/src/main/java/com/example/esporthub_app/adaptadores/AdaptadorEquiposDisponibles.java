@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AdaptadorEquiposDisponibles extends RecyclerView.Adapter<AdaptadorEquiposDisponibles.EquipoViewHolder> {
     private List<Equipo> listaEquipos;
-    private List<String> listaIdsDocumentos;  // Lista para almacenar los IDs de los documentos
+    private List<String> listaIdsDocumentos;  // Lista para almacenar los IDs de los documentos de Equipo
     private Context context;
     private OnEquipoClickListener listener;
 

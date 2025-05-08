@@ -1,5 +1,6 @@
 package com.example.esporthub_app.adaptadores;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class AdaptadorPartidos extends RecyclerView.Adapter<AdaptadorPartidos.Pa
         return partidos.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updatePartidos(List<Partido> nuevosPartidos) {
         partidos.clear();
         partidos.addAll(nuevosPartidos);
@@ -52,7 +54,7 @@ public class AdaptadorPartidos extends RecyclerView.Adapter<AdaptadorPartidos.Pa
     }
 
     public interface OnPartidoClickListener {
-        void onEliminarClick(Partido partido); // Nuevo método para manejar la eliminación
+        void onEliminarClick(Partido partido);
     }
 
     public static class PartidoViewHolder extends RecyclerView.ViewHolder {

@@ -11,10 +11,11 @@ import android.app.DatePickerDialog;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 import com.example.esporthub_app.modelos.Partido;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -108,7 +109,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
             inputEquipo1.setAdapter(adapter);
             inputEquipo2.setAdapter(adapter);
         }).addOnFailureListener(e ->
-                Toast.makeText(this, "Error al cargar equipos", Toast.LENGTH_SHORT).show()
+                Snackbar.make(findViewById(android.R.id.content), "Error al cargar equipos", Snackbar.LENGTH_SHORT).show()
         );
     }
 
@@ -148,7 +149,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
             inputTorneo.setAdapter(adapter);
 
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Error al cargar torneos", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Error al cargar torneos", Snackbar.LENGTH_SHORT).show();
         });
     }
 
@@ -159,18 +160,18 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
         String torneoSeleccionado = inputTorneo.getText().toString().trim();
 
         if (equipo1.isEmpty() || equipo2.isEmpty() || fecha.isEmpty()) {
-            Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Completa todos los campos obligatorios", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
         if (equipo1.equals(equipo2)) {
-            Toast.makeText(this, "Los equipos deben ser distintos", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Los equipos deben ser distintos", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
         String idTorneo = mapaNombreIdTorneo.get(torneoSeleccionado);
         if (idTorneo == null) {
-            Toast.makeText(this, "Selecciona un torneo válido", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Selecciona un torneo válido", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -180,7 +181,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(equiposSnapshot -> {
                     if (equiposSnapshot.size() < 2) {
-                        Toast.makeText(this, "No se encontraron ambos equipos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "No se encontraron ambos equipos", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -196,7 +197,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                     db.collection("torneos").document(idTorneo).get()
                             .addOnSuccessListener(torneoDoc -> {
                                 if (!torneoDoc.exists()) {
-                                    Toast.makeText(this, "Torneo no encontrado", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Torneo no encontrado", Snackbar.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -212,7 +213,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                                 }
 
                                 if (!nombresParticipantes.contains(equipo1) || !nombresParticipantes.contains(equipo2)) {
-                                    Toast.makeText(this, "Ambos equipos deben pertenecer al torneo seleccionado", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Ambos equipos deben pertenecer al torneo seleccionado", Snackbar.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -223,7 +224,7 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                                 miembrosEquipo1.retainAll(miembrosEquipo2); // intersección
 
                                 if (!miembrosEquipo1.isEmpty()) {
-                                    Toast.makeText(this, "No se puede crear el partido: hay jugadores que pertenecen a ambos equipos", Toast.LENGTH_LONG).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "No se puede crear el partido: hay jugadores que pertenecen a ambos equipos", Snackbar.LENGTH_LONG).show();
                                     return;
                                 }
 
@@ -231,11 +232,11 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                                 crearPartido(equipo1, equipo2, fecha, idTorneo);
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Error al obtener el torneo", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(android.R.id.content), "Error al obtener el torneo", Snackbar.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al obtener equipos", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error al obtener equipos", Snackbar.LENGTH_SHORT).show();
                 });
     }
 
@@ -267,10 +268,10 @@ public class Pantalla_CrearPartido extends AppCompatActivity {
                                 });
                     }
 
-                    Toast.makeText(this, "Partido guardado correctamente", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Partido guardado correctamente", Snackbar.LENGTH_SHORT).show();
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Snackbar.make(findViewById(android.R.id.content), "Error al guardar", Snackbar.LENGTH_SHORT).show());
 
         // Notificaciones
         db.collection("equipos")

@@ -2,7 +2,7 @@ package com.example.esporthub_app.vistas.torneos;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorEliminarTorneo;
 import com.example.esporthub_app.modelos.Torneo;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -27,6 +28,7 @@ public class Pantalla_EliminarTorneo extends AppCompatActivity {
     private List<Torneo> listaTorneos;
     private AdaptadorEliminarTorneo adapter;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,7 @@ public class Pantalla_EliminarTorneo extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         recyclerTorneos = findViewById(R.id.recyclerTorneos);
         listaTorneos = new ArrayList<>();
         toolbar = findViewById(R.id.toolbarEliminarTorneo);
@@ -51,7 +54,6 @@ public class Pantalla_EliminarTorneo extends AppCompatActivity {
         recyclerTorneos.setAdapter(adapter);
 
         cargarTorneosActivos();
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -68,7 +70,7 @@ public class Pantalla_EliminarTorneo extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar torneos", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(findViewById(android.R.id.content), "Error al cargar torneos", Snackbar.LENGTH_SHORT).show()
                 );
     }
 
@@ -78,13 +80,12 @@ public class Pantalla_EliminarTorneo extends AppCompatActivity {
                 .document(torneo.getIdTorneo())
                 .delete()
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Torneo eliminado", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Torneo eliminado", Snackbar.LENGTH_SHORT).show();
                     listaTorneos.remove(torneo);
                     adapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Snackbar.make(findViewById(android.R.id.content), "Error al eliminar", Snackbar.LENGTH_SHORT).show()
+                );
     }
-
 }

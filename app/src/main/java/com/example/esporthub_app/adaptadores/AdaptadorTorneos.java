@@ -1,7 +1,5 @@
 package com.example.esporthub_app.adaptadores;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.R;
 import com.example.esporthub_app.modelos.Torneo;
-import com.example.esporthub_app.vistas.torneos.Pantalla_DetallesTorneo;
+
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -22,13 +20,13 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
     private List<Torneo> torneoList;
     private OnAbandonarTorneoListener listener;
 
-    // Constructor con el listener
+
     public AdaptadorTorneos(List<Torneo> torneoList, OnAbandonarTorneoListener listener) {
         this.torneoList = torneoList;
         this.listener = listener;
     }
 
-    // Interfaz para manejar el abandono de un torneo
+
     public interface OnAbandonarTorneoListener {
         void onVerDetalles(Torneo torneo);
         void onAbandonar(Torneo torneo, String idDocTorneo);
@@ -48,14 +46,14 @@ public class AdaptadorTorneos extends RecyclerView.Adapter<AdaptadorTorneos.Torn
         holder.tvNombre.setText(torneo.getNombre());
         holder.tvDescripcion.setText(torneo.getDescripcion());
 
-        // Configuración para ver detalles del torneo
+
         holder.btnVerDetalles.setOnClickListener(view -> {
             if (listener != null) {
                 listener.onVerDetalles(torneo);
             }
         });
 
-        // Configuración para abandonar el torneo
+
         holder.btnAbandonarTorneo.setOnClickListener(v -> {
             if (listener != null) {
                 String idDocTorneo = torneo.getIdTorneo();

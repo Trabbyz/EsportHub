@@ -2,11 +2,10 @@ package com.example.esporthub_app.vistas.equipos;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import com.example.esporthub_app.R;
 import com.example.esporthub_app.adaptadores.AdaptadorJugadoresSeleccion;
 import com.example.esporthub_app.modelos.Equipo;
 import com.example.esporthub_app.modelos.Jugador;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class Pantalla_CrearEquipo extends AppCompatActivity {
 
@@ -85,7 +86,6 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                         for (QueryDocumentSnapshot doc : jugadorTask.getResult()) {
                             String id = doc.getString("uid");
 
-                            // Excluir al usuario actual
                             if (id == null || id.equals(idUsuarioActual)) continue;
 
                             String nombre = doc.getString("nombre");
@@ -103,11 +103,10 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
 
                     } else {
                         Log.e("Firestore", "Error al obtener jugadores sin equipo", jugadorTask.getException());
-                        Toast.makeText(this, "Error al cargar jugadores", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Error al cargar jugadores", Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
-
 
     private void guardarEquipo() {
         String nombre = etNombreEquipo.getText().toString().trim();
@@ -116,13 +115,13 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
         List<Jugador> miembros = adaptador.getSeleccionados();
 
         if (miembros.size() < 1) {
-            Toast.makeText(this, "Selecciona al menos un jugador", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Selecciona al menos un jugador", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
         String idUsuarioActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         List<String> idMiembros = new ArrayList<>();
+
         for (Jugador j : miembros) {
             idMiembros.add(j.getUid());
         }
@@ -142,31 +141,29 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                             db.collection("equipos")
                                     .add(nuevoEquipo)
                                     .addOnSuccessListener(documentReference -> {
-                                        // 🔧 Actualizar el campo idEquipo con el ID generado por Firestore
                                         String idGenerado = documentReference.getId();
                                         documentReference.update("idEquipo", idGenerado)
                                                 .addOnSuccessListener(unused -> {
                                                     actualizarJugadoresConEquipoActual(miembros, nombre);
-                                                    Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                                                    Snackbar.make(findViewById(android.R.id.content), "Equipo creado con éxito", Snackbar.LENGTH_SHORT).show();
                                                     finish();
                                                 })
                                                 .addOnFailureListener(e -> {
                                                     Log.e("Firestore", "Error al actualizar el ID del equipo", e);
-                                                    Toast.makeText(this, "Error al guardar el ID del equipo", Toast.LENGTH_SHORT).show();
+                                                    Snackbar.make(findViewById(android.R.id.content), "Error al guardar el ID del equipo", Snackbar.LENGTH_SHORT).show();
                                                 });
                                     })
                                     .addOnFailureListener(e -> {
                                         Log.e("Firestore", "Error al crear equipo", e);
-                                        Toast.makeText(this, "Error al guardar el equipo", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(findViewById(android.R.id.content), "Error al guardar el equipo", Snackbar.LENGTH_SHORT).show();
                                     });
-
                         } else {
-                            Toast.makeText(this, "No se encontró el usuario actual en la colección de jugadores", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(android.R.id.content), "No se encontró el usuario actual en la colección de jugadores", Snackbar.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error al buscar el jugador actual", e);
-                        Toast.makeText(this, "Error al obtener datos del jugador actual", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Error al obtener datos del jugador actual", Snackbar.LENGTH_SHORT).show();
                     });
 
         } else {
@@ -175,27 +172,24 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
             db.collection("equipos")
                     .add(nuevoEquipo)
                     .addOnSuccessListener(documentReference -> {
-                        // 🔧 También aquí, actualizar el campo idEquipo
                         String idGenerado = documentReference.getId();
                         documentReference.update("idEquipo", idGenerado)
                                 .addOnSuccessListener(unused -> {
                                     actualizarJugadoresConEquipoActual(miembros, nombre);
-                                    Toast.makeText(this, "Equipo creado con éxito", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Equipo creado con éxito", Snackbar.LENGTH_SHORT).show();
                                     finish();
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("Firestore", "Error al actualizar el ID del equipo", e);
-                                    Toast.makeText(this, "Error al guardar el ID del equipo", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Error al guardar el ID del equipo", Snackbar.LENGTH_SHORT).show();
                                 });
                     })
                     .addOnFailureListener(e -> {
                         Log.e("Firestore", "Error al crear equipo", e);
-                        Toast.makeText(this, "Error al guardar el equipo", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Error al guardar el equipo", Snackbar.LENGTH_SHORT).show();
                     });
         }
-
     }
-
 
     private void actualizarJugadoresConEquipoActual(List<Jugador> miembros, String nombreEquipo) {
         for (Jugador jugador : miembros) {
@@ -205,7 +199,7 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             db.collection("jugadores")
-                                    .document(doc.getId()) // Aquí ya tienes el ID real
+                                    .document(doc.getId())
                                     .update("equipoActual", nombreEquipo)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("Firestore", "Jugador actualizado con equipo actual: " + nombreEquipo);
@@ -220,7 +214,5 @@ public class Pantalla_CrearEquipo extends AppCompatActivity {
                     });
         }
     }
-
-
-
 }
+

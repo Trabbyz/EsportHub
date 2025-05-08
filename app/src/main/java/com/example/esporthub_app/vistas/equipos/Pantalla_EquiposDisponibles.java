@@ -4,8 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,9 +65,7 @@ public class Pantalla_EquiposDisponibles extends AppCompatActivity {
         listaEquipos = new ArrayList<>();
 
         // Inicialización del adaptador
-        adapter = new AdaptadorEquiposDisponibles(
-                listaEquipos,
-                new ArrayList<>(), // Lista de IDs de documentos (aún vacía)
+        adapter = new AdaptadorEquiposDisponibles(listaEquipos, new ArrayList<>(), // Lista de IDs de documentos (aún vacía)
                 this,
                 new AdaptadorEquiposDisponibles.OnEquipoClickListener() {
                     @Override

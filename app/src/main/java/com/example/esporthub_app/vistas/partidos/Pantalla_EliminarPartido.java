@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,10 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.esporthub_app.R;
-import com.example.esporthub_app.adaptadores.AdaptadorEliminarTorneo;
+
 import com.example.esporthub_app.adaptadores.AdaptadorPartidos;
 import com.example.esporthub_app.modelos.Partido;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -39,6 +40,7 @@ public class Pantalla_EliminarPartido extends AppCompatActivity {
     private AdaptadorPartidos partidoAdapter;
     private Map<String, String> mapaPartidoIdTorneo;
     private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +67,11 @@ public class Pantalla_EliminarPartido extends AppCompatActivity {
         partidos = new ArrayList<>();
         mapaPartidoIdTorneo = new HashMap<>();
 
-        // Inicializar el RecyclerView y el adaptador
         partidoAdapter = new AdaptadorPartidos(partidos, partido -> eliminarPartido(partido.getIdPartido()));
         recyclerPartidos.setLayoutManager(new LinearLayoutManager(this));
         recyclerPartidos.setAdapter(partidoAdapter);
 
-        // Cargar torneos
         cargarTorneos();
-
-
     }
 
     private void cargarTorneos() {
@@ -98,7 +96,7 @@ public class Pantalla_EliminarPartido extends AppCompatActivity {
             });
 
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Error al cargar los torneos", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Error al cargar los torneos", Snackbar.LENGTH_SHORT).show();
         });
     }
 
@@ -121,16 +119,14 @@ public class Pantalla_EliminarPartido extends AppCompatActivity {
                         recyclerPartidos.setVisibility(View.VISIBLE);
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error al cargar los partidos", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Error al cargar los partidos", Snackbar.LENGTH_SHORT).show();
                     });
         }
     }
 
-
     private void onPartidoSelected(String partidoNombre) {
         String partidoId = mapaPartidoIdTorneo.get(partidoNombre);
         if (partidoId != null) {
-            // Al seleccionar un partido, mostrar confirmación para eliminarlo
             btnEliminarPartido.setOnClickListener(v -> eliminarPartido(partidoId));
         }
     }
@@ -140,12 +136,12 @@ public class Pantalla_EliminarPartido extends AppCompatActivity {
             db.collection("partidos").document(partidoId).delete()
                     .addOnSuccessListener(aVoid -> {
                         txtConfirmacion.setText("Partido eliminado correctamente");
-                        Toast.makeText(this, "Partido eliminado", Toast.LENGTH_SHORT).show();
-                        cargarPartidos(inputTorneo.getText().toString().trim()); // Recargar partidos
+                        Snackbar.make(findViewById(android.R.id.content), "Partido eliminado", Snackbar.LENGTH_SHORT).show();
+                        cargarPartidos(inputTorneo.getText().toString().trim());
                     })
                     .addOnFailureListener(e -> {
                         txtConfirmacion.setText("Error al eliminar el partido");
-                        Toast.makeText(this, "Error al eliminar el partido", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Error al eliminar el partido", Snackbar.LENGTH_SHORT).show();
                     });
         }
     }
