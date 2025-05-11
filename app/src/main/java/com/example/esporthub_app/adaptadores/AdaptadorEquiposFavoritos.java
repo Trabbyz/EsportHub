@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.esporthub_app.R;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class AdaptadorEquiposFavoritos extends RecyclerView.Adapter<AdaptadorEqu
     @Override
     public EquipoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_equipo_favorito, parent, false);
         return new EquipoViewHolder(itemView);
     }
 
@@ -42,7 +43,7 @@ public class AdaptadorEquiposFavoritos extends RecyclerView.Adapter<AdaptadorEqu
 
         public EquipoViewHolder(View itemView) {
             super(itemView);
-            equipoNombre = itemView.findViewById(android.R.id.text1);
+            equipoNombre = itemView.findViewById(R.id.txtNombreEquipo);
         }
     }
 }
