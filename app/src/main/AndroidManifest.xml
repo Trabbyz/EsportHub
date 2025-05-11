@@ -14,73 +14,114 @@
         tools:targetApi="31">
         <activity
             android:name=".vistas.partidos.Pantalla_DetallesPartido"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".vistas.jugador.Pantalla_PerfilJugador"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".vistas.jugador.Pantalla_VerJugadores"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".vistas.equipos.Pantalla_GestionarEquipos"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.partidos.Pantalla_EliminarPartido"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.partidos.Pantalla_CrearPartido"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.torneos.Pantalla_EliminarTorneo"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.torneos.Pantalla_CrearTorneo"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.equipos.Pantalla_VerDetallesEquipo"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.equipos.Pantalla_CrearEquipo"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.jugador.Pantalla_VerMisEquipos"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.jugador.Pantalla_VerMisTorneos"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.home.Pantalla_InicioJugadores"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.home.Pantalla_InicioAdministradores"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.notificaciones.Pantalla_Notificaciones_Jugador"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.equipos.Pantalla_EquiposDisponibles"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.torneos.Pantalla_DetallesTorneo"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.torneos.Pantalla_TorneosDisponibles"
-            android:exported="false" />
-        <activity
-            android:name=".vistas.jugador.Pantalla_EditarPerfil"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.jugador.Pantalla_VerPerfil"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.auth.Pantalla_Registro"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.auth.Pantalla_InicioSesion"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".vistas.bienvenida.Pantalla_Bienvenida"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

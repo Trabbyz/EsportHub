@@ -1,5 +1,6 @@
 package com.example.esporthub_app.vistas.jugador;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -42,6 +43,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
     private List<Equipo> listaEquipos;
     private List<String> listaIdsDocumentos;
     private Toolbar toolbarMisEquipos;
+    private AdaptadorEquipos adaptador;
     private FirebaseFirestore db;
 
     @Override
@@ -118,7 +120,6 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                         if (equipo.getIdMiembros() != null && equipo.getIdMiembros().contains(uidJugador)) {
                             listaEquipos.add(equipo);
                         }
-
                     }
 
                     // Si no hay equipos, muestra el layout adecuado
@@ -131,7 +132,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                         // Instancia el adaptador y configura el listener
-                        AdaptadorEquipos adaptador = new AdaptadorEquipos(listaEquipos, listaIdsDocumentos);
+                        adaptador = new AdaptadorEquipos(listaEquipos, listaIdsDocumentos);
                         adaptador.setOnEquipoClickListener(new AdaptadorEquipos.OnEquipoClickListener() {
                             @Override
                             public void onVerDetalles(Equipo equipo) {
@@ -156,20 +157,35 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                 });
     }
 
+
     // Método para abandonar un equipo
+    @SuppressLint("NotifyDataSetChanged")
     private void abandonarEquipo(Equipo equipo, String idDocEquipo) {
         String uidJugadorActual = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         db.collection("equipos").document(idDocEquipo).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Equipo equipoActualizado = documentSnapshot.toObject(Equipo.class);
+                    List<String> idMiembros = (List<String>) documentSnapshot.get("idMiembros");
+                    equipoActualizado.setIdMiembros(idMiembros);
+                    List<Map<String, Object>> miembrosRaw = (List<Map<String, Object>>) documentSnapshot.get("miembros");
+
+                    List<Jugador> miembrosConvertidos = new ArrayList<>();
+                    if (miembrosRaw != null) {
+                        for (Map<String, Object> m : miembrosRaw) {
+                            String uid = (String) m.get("uid");
+                            String nombre = (String) m.get("nombre");
+                            miembrosConvertidos.add(new Jugador(uid, nombre));
+                        }
+                    }
+                    equipoActualizado.setMiembros(miembrosConvertidos);
 
                     if (equipoActualizado == null) {
                         Snackbar.make(recyclerView, "Error al obtener datos del equipo", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (!equipoActualizado.getIdMiembros().contains(uidJugadorActual)) {
+                    if (equipoActualizado.getIdMiembros() == null || !equipoActualizado.getIdMiembros().contains(uidJugadorActual)) {
                         Snackbar.make(recyclerView, "No perteneces a este equipo", Snackbar.LENGTH_SHORT).show();
                         return;
                     }
@@ -179,7 +195,7 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                     // Crear nuevo array sin el jugador actual
                     List<Map<String, Object>> nuevosMiembros = new ArrayList<>();
                     for (Jugador j : equipoActualizado.getMiembros()) {
-                        if (!j.getUid().equals(uidJugadorActual)) {
+                        if (j.getUid() != null && !j.getUid().equals(uidJugadorActual)) {
                             Map<String, Object> jugadorMap = new HashMap<>();
                             jugadorMap.put("uid", j.getUid());
                             jugadorMap.put("nombre", j.getNombre());
@@ -198,18 +214,47 @@ public class Pantalla_VerMisEquipos extends AppCompatActivity {
                                 db.collection("jugadores")
                                         .whereEqualTo("uid", uidJugadorActual)
                                         .get()
-                                        .addOnSuccessListener(querySnapshot -> {
-                                            if (!querySnapshot.isEmpty()) {
-                                                DocumentSnapshot jugadorDoc = querySnapshot.getDocuments().get(0);
-                                                db.collection("jugadores").document(jugadorDoc.getId())
-                                                        .update("equipoActual", "")
-                                                        .addOnSuccessListener(aVoid -> {
-                                                            Snackbar.make(recyclerView, "Has abandonado el equipo", Snackbar.LENGTH_SHORT).show();
-                                                            cargarMisEquipos();  // Recargar la lista de equipos
+                                        .addOnSuccessListener(jugadorSnapshot -> {
+                                            if (!jugadorSnapshot.isEmpty()) {
+                                                DocumentSnapshot jugadorDoc = jugadorSnapshot.getDocuments().get(0);
+                                                String jugadorDocId = jugadorDoc.getId();
+
+                                                // Verificar en qué equipos sigue estando el jugador
+                                                db.collection("equipos")
+                                                        .whereArrayContains("idMiembros", uidJugadorActual)
+                                                        .get()
+                                                        .addOnSuccessListener(equiposSnapshot -> {
+                                                            if (!equiposSnapshot.isEmpty()) {
+                                                                // El jugador aún está en otros equipos
+                                                                DocumentSnapshot equipoDoc = equiposSnapshot.getDocuments().get(0);
+                                                                String nombreNuevoEquipo = equipoDoc.getString("nombre");
+                                                                db.collection("jugadores").document(jugadorDocId)
+                                                                        .update("equipoActual", nombreNuevoEquipo)
+                                                                        .addOnSuccessListener(aVoid -> {
+                                                                            Snackbar.make(recyclerView, "Has abandonado el equipo", Snackbar.LENGTH_SHORT).show();
+                                                                            cargarMisEquipos();
+                                                                            // Eliminar el equipo de la lista para que el RecyclerView se actualice
+                                                                            listaEquipos.remove(equipo);
+                                                                            adaptador.notifyDataSetChanged();
+                                                                        });
+                                                            } else {
+                                                                // Ya no está en ningún equipo, vaciar el campo
+                                                                db.collection("jugadores").document(jugadorDocId)
+                                                                        .update("equipoActual", "")
+                                                                        .addOnSuccessListener(aVoid -> {
+                                                                            Snackbar.make(recyclerView, "Has abandonado el equipo", Snackbar.LENGTH_SHORT).show();
+                                                                            cargarMisEquipos();
+                                                                            // Eliminar el equipo de la lista para que el RecyclerView se actualice
+                                                                            listaEquipos.remove(equipo);
+                                                                            adaptador.notifyDataSetChanged();
+                                                                        });
+                                                            }
                                                         });
                                             }
                                         });
+
                             });
                 });
     }
+
 }
