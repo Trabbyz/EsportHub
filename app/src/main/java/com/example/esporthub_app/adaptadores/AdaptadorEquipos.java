@@ -49,7 +49,7 @@ public class AdaptadorEquipos extends RecyclerView.Adapter<AdaptadorEquipos.Equi
         Equipo equipo = listaEquipos.get(position);
         holder.tvNombre.setText(equipo.getNombre());
         holder.tvDescripcion.setText(equipo.getDescripcion());
-        String idDocEquipo = listaIdsDocumentos.get(position);
+        String idDocEquipo = equipo.getId();
         holder.btnVerDetalles.setOnClickListener(v -> listener.onVerDetalles(equipo));
         holder.btnAbandonar.setOnClickListener(v -> listener.onAbandonar(equipo, idDocEquipo));
 

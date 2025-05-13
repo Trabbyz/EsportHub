@@ -146,14 +146,14 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
         db.collection("torneos")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    listaTorneos.clear(); // Limpiar la lista antes de llenarla
+                    listaTorneos.clear();
 
                     // Recorremos todos los torneos obtenidos
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         Torneo torneo = doc.toObject(Torneo.class);
-                        torneo.setIdTorneo(doc.getId()); // Si necesitas luego el ID del torneo
+                        torneo.setIdTorneo(doc.getId());
 
-                        boolean estaEnTorneo = false; // Variable para verificar si el jugador está en el torneo
+                        boolean estaEnTorneo = false;
 
                         // Verificamos los equipos participantes
                         if (torneo.getParticipantes() != null) {
@@ -165,12 +165,12 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
                                         // Verificamos si el UID del jugador coincide
                                         if (jugador.getUid().equals(uidJugador)) {
                                             estaEnTorneo = true; // El jugador está en este torneo
-                                            break; // No necesitamos seguir buscando en este equipo
+                                            break;
                                         }
                                     }
                                 }
 
-                                if (estaEnTorneo) break; // Si encontramos al jugador, dejamos de buscar más
+                                if (estaEnTorneo) break;
                             }
                         }
 
@@ -191,7 +191,6 @@ public class Pantalla_InicioJugadores extends AppCompatActivity {
     }
 
     private void actualizarInterfazConTorneos() {
-        // Aquí puedes actualizar la interfaz, como mostrar la cantidad de torneos o los detalles
 
         textTorneos.setText("Torneos Activos: " + listaTorneos.size());
     }

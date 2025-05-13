@@ -137,9 +137,9 @@ public class Pantalla_VerJugadores extends AppCompatActivity {
                             db.collection("jugadores").document(document.getId()).delete()
                                     .addOnSuccessListener(unused -> {
                                         Jugador jugador = document.toObject(Jugador.class);
-                                        Snackbar.make(findViewById(android.R.id.content), "Jugador eliminado de jugadores", Snackbar.LENGTH_SHORT).show();
                                         listaJugadores.remove(jugador);
                                         adaptadorJugadores.notifyDataSetChanged();
+                                        Snackbar.make(findViewById(android.R.id.content), "Jugador eliminado de jugadores", Snackbar.LENGTH_SHORT).show();
                                     })
                                     .addOnFailureListener(e -> {
                                         Snackbar.make(findViewById(android.R.id.content), "Error al eliminar el jugador de jugadores", Snackbar.LENGTH_SHORT).show();
